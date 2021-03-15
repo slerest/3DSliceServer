@@ -1,3 +1,4 @@
 #!/bin/bash
 
-SLICER_SERVER_PATH='/home/ouralgan/3DSliceServer' python3 setup.py
+#apt install build-essentials cmake python3-dev python3-sip-dev protobuf-compiler libprotoc-dev libprotobuf-dev
+python3 download.py

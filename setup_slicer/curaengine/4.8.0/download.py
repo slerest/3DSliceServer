@@ -1,12 +1,17 @@
 import logging
 import os
 import requests 
+import zipfile
 
 def download_zip(url, save_path, chunk_size=128):
     r = requests.get(url, stream=True)
     with open(save_path, 'wb') as fd:
         for chunk in r.iter_content(chunk_size=chunk_size):
             fd.write(chunk)
+
+def unzip(path, SLICER_SERVER_PATH):
+    with zipfile.ZipFile(path, 'r') as zip_ref:
+        zip_ref.extractall(SLICER_SERVER_PATH + '/setup_slicer/curaengine/4.8.0/')
 
 if __name__ == '__main__':
     FORMAT = '%(asctime)-15s %(levelname)s: %(message)s'
@@ -25,8 +30,20 @@ if __name__ == '__main__':
     path = SLICER_SERVER_PATH + '/setup_slicer/curaengine/4.8.0/protobuf-all-3.15.6.zip'
     try:
         download_zip(url, path)
+        unzip(path, SLICER_SERVER_PATH)
     except Exception as e:
         logging.error('Download and unzip Protobuf 3.15.6: %s', str(e))
+        raise e
+
+    # LIBARCUS 4.8.0
+    logging.info('Download and unzip libArcus 4.8.0')
+    url = 'https://github.com/Ultimaker/libArcus/archive/4.8.0.zip'
+    path = SLICER_SERVER_PATH + '/setup_slicer/curaengine/4.8.0/libArcus-4.8.0.zip'
+    try:
+        download_zip(url, path)
+        unzip(path, SLICER_SERVER_PATH)
+    except Exception as e:
+        logging.error('Download and unzip libArcus 4.8.0: %s', str(e))
         raise e
 
     # CURAENGINE 4.8.0
@@ -35,6 +52,7 @@ if __name__ == '__main__':
     path = SLICER_SERVER_PATH + '/setup_slicer/curaengine/4.8.0/curaengine-4.8.0.zip'
     try:
         download_zip(url, path)
+        unzip(path, SLICER_SERVER_PATH)
     except Exception as e:
         logging.error('Download and unzip Curaengine 4.8.0: %s', str(e))
         raise e
