@@ -38,5 +38,4 @@ WORKDIR "/curaengine/4.8.0/CuraEngine-4.8.0/build"
 RUN cmake .. && make
 
 # App
-COPY app /usr/src/app
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

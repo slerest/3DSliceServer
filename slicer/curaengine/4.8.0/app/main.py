@@ -1,35 +1,20 @@
 from typing import Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 
 app = FastAPI()
 
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Optional[bool] = None
+class Slice(BaseModel):
+    gcode: str
+    print_time: datetime
+    slice_time: datetime
 
+@app.get("/version")
+async def version():
+    return {"version": "4.8.0"}
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
-
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
-
-@app.patch("/items/{item_id}")
-def patch_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
-
-@app.post("/items/")
-def add_item(item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+@app.post("/slice/")
+async def slice(file_id: str):
+    return {"file_size": len(file)}
