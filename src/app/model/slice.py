@@ -16,7 +16,7 @@ class SliceStatus(str, Enum):
 class SliceOut(BaseModel):
     id: int
     gcode: str
-    print_time: datetime
+    print_time: timedelta
     slice_time: timedelta
     material: Material
     part: Part
@@ -24,6 +24,8 @@ class SliceOut(BaseModel):
     technologie: Technologie
     color: Color
     slicer: Slicer
+    created_at: datetime
+    updated_at: datetime
 
 class SliceIn(BaseModel):
     file: bytes
@@ -46,7 +48,7 @@ class SliceUpdateIn(BaseModel):
 class SliceUpdateOut(BaseModel):
     id: int
     gcode: str
-    print_time: datetime
+    print_time: timedelta
     slice_time: timedelta
     material: Material
     part: Part
