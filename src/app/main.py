@@ -3,36 +3,39 @@ from typing import Optional
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 
-app = FastAPI()
+from .api import slice
+
 
 # TODO tester slic3r et voir si on peut avoir des tables generic de material
 
-class Slice(BaseModel):
-    id: int
-    gcode: str
-    print_time: datetime
-    slice_time: datetime
-    material: int
-    part: int
-    status: int
-    technologie: str
-    color_rgb: str
-
-class Material(BaseModel):
-    id: int
-    name: str
-    description_file: str
-
 # TODO return la version de l'api principal et les versions des slicer proposé
+
+def get_application() -> FastAPI:
+    application = FastAPI(title=PROJECT_NAME, debug=DEBUG, version=VERSION)
+
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=ALLOWED_HOSTS or ["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    application.add_event_handler("startup", create_start_app_handler(application))
+    application.add_event_handler("shutdown", create_stop_app_handler(application))
+
+    application.add_exception_handler(HTTPException, http_error_handler)
+    application.add_exception_handler(RequestValidationError, http422_error_handler)
+
+    #application.include_router(api_router, prefix=API_PREFIX)
+
+    app.include_router(slice.router)
+
+    return application
+
+app = get_application()
+
 @app.get("/version")
 async def version():
     return {"version": "0.1"}
 
-@app.post("/curaengine/4.8.0/slice")
-async def slice_curaengine_4_8_0(file_id: str, material: str):
-    # TODO
-    # check in database if curaengine 4.8.0 have been setup
-    # if not return 400
-    # if it exists redirect to the container curaengine 4.8.0 for slicing
-    # return object
-    return {"file_size": len(file)}

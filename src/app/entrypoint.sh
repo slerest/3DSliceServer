@@ -1,3 +1,6 @@
 #!/bin/bash
 
-exec "uvicorn main:app --reload"
+pwd
+ls
+uvicorn --version
+uvicorn main:app --reload

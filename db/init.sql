@@ -51,7 +51,7 @@ CREATE TABLE "3DSLICESERVER"."SLICE" ( -- TODO check si on peut creer des nom de
 	"SLICE_TIME" interval DEFAULT NULL,
 	"PART_ID" integer DEFAULT NULL, -- foreign key
 	"STATUS" varchar(50) DEFAULT NULL,
-	"COLOR" integer[] DEFAULT NULL, -- peut avoir plusieur couleur
+	"COLOR" varchar(10)[] DEFAULT NULL, -- peut avoir plusieurs couleurs, format RGB
 	"SLICER_ID" integer DEFAULT NULL, -- foreign key
 	"MATERIAL_ID" integer DEFAULT NULL, -- foreign key
 	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
