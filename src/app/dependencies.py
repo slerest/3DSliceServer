@@ -16,12 +16,8 @@ accepted_auth_method = [
 async def get_auth(authorization: str = Header(...)):
     auth_method = authorization.split()[0]
     if auth_method not in accepted_auth_method:
-
+        return False
     return True
 
-async def verify_auth(authorization: str = Header(...)):
+async def auth(authorization: str = Header(...), admin=False):
     return True
-
-async def verify_auth_admin(authorization: str = Header(...)):
-    return True
-

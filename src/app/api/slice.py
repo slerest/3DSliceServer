@@ -1,10 +1,11 @@
 import aiosql
-import psycopg2
 from fastapi import APIRouter, Depends, HTTPException
-from ..dependencies import auth
+from typing import List
+from dependencies import auth
+from model.slice import SliceOut, SliceIn
 
 router = APIRouter(
-    prefix="/slices",
+    prefix="/api/slice-server/v0.1/slice",
     tags=["slices"],
     dependencies=[Depends(auth)],
     responses={404: {"description": "Not found"}},
@@ -30,7 +31,7 @@ async def read_slice(file_id: str, material: str, response_model=SliceOut):
     return s
 
 @router.post("/")
-async def add_slice(slice: SlicIn, response_model=SliceOut):
+async def add_slice(slice: SliceIn, response_model=SliceOut):
     queries = aiosql.from_path(PATH_SQL  + "slice.sql", "psycopg2")
     # TODO
     # check in database if curaengine 4.8.0 have been setup

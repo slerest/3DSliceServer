@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
 # ----------------------- SLICING SERVER -----------------------
-    3d-slicing-server:
+    3d-slice-server:
         build:
             context: ./src
         command: uvicorn main:app --reload
@@ -22,7 +22,7 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.docker.network=traefik-inside"
-            - "traefik.http.routers.slicing-server.rule=PathPrefix(`/api/slicing-server`)"
+            - "traefik.http.routers.slicing-server.rule=PathPrefix(`/api/slice-server/v0.1`)"
             - "traefik.http.routers.slicing-server.entrypoints=http"
             - "traefik.http.services.slicing-server.loadbalancer.server.port=80"
 

@@ -1,5 +1,6 @@
 # 3DSliceServer
 Multiple 3D slicer in one endpoint API
+Material and Machine are compatible with senvol database.
 
 3D slicer avalaible:<br />
 	- [CuraEngine 4.7](https://github.com/Ultimaker/CuraEngine)<br />

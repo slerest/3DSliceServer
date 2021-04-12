@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 from enum import Enum
+from model.material import MaterialOut
+from model.part import PartOut
+from model.slicer import SlicerOut
 
 class SliceStatus(str, Enum):
     sliced = "sliced"
@@ -18,21 +21,18 @@ class SliceOut(BaseModel):
     gcode: str
     print_time: timedelta
     slice_time: timedelta
-    material: Material
-    part: Part
+    material: MaterialOut
+    part: PartOut
     status: SliceStatus
-    technologie: Technologie
-    color: Color
-    slicer: Slicer
+    slicer: SlicerOut
     created_at: datetime
     updated_at: datetime
 
 class SliceIn(BaseModel):
     file: bytes
-    technologie: int # id of the technologie
     slicer: int # id of the slicer
     material: int # id of the material
-    color: int # id of the color 
+    part: int # id of the material
 
 class SliceUpdateIn(BaseModel):
     gcode: str
@@ -41,18 +41,4 @@ class SliceUpdateIn(BaseModel):
     material: int
     part: int
     status: SliceStatus
-    technologie: int
-    color: int
     slicer: int
-
-class SliceUpdateOut(BaseModel):
-    id: int
-    gcode: str
-    print_time: timedelta
-    slice_time: timedelta
-    material: Material
-    part: Part
-    status: SliceStatus
-    technologie: Technologie
-    color: Color
-    slicer: Slicer
