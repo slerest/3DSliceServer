@@ -1,29 +1,31 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from core.settings import Settings
 from core.events import startup, shutdown
 
-from api.routes import router
+from api.routes import router as api_router
 
 def get_app() -> FastAPI:
-    app = FastAPI(title=APP_NAME, debug=DEBUG, version=VERSION)
+    s = Settings()
+    app = FastAPI(title=s.app_name, debug=s.debug, version=s.version)
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=ALLOWED_HOSTS or ["*"],
+        allow_origins=s.allowed_hosts or ["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    app.add_event_handler("startup", startup(application))
-    app.add_event_handler("shutdown", shutdown(application))
+    #app.add_event_handler("startup", startup(app))
+    #app.add_event_handler("shutdown", shutdown(app))
 
-    app.add_exception_handler(HTTPException, http_error_handler)
-    app.add_exception_handler(RequestValidationError, http422_error_handler)
+    #app.add_exception_handler(HTTPException, http_error_handler)
+    #app.add_exception_handler(RequestValidationError, http422_error_handler)
 
     # TODO test things with API_PREFIX
-    app.include_router(router, prefix=API_PREFIX)
+    app.include_router(api_router, prefix=s.api_prefix)
 
     return app
 

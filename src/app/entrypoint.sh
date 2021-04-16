@@ -1,6 +1,4 @@
 #!/bin/bash
 
-pwd
-ls
-uvicorn --version
+env
 uvicorn main:app --reload
