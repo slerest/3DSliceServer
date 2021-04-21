@@ -29,7 +29,7 @@ def startup(app: FastAPI) -> Callable:
         logging.info("Server Startup")
     return start
 
-async def shutdown(app: FastAPI):
+async def shutdown(app: FastAPI) -> Callable:
     async def stop_app() -> None:
         logger = logging.getLogger()
         if not app.state.db:

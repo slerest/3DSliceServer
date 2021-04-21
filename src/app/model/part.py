@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
+from model.generics import DateTimeModelMixin, IDModelMixin
 
-class PartOut(BaseModel):
-    id: int
+class PartOut(DateTimeModelMixin, IDModelMixin):
     name: str
     unit: str
     volume: float
@@ -12,10 +12,3 @@ class PartOut(BaseModel):
     x: float
     y: float
     z: float
-    created_at: datetime
-    updated_at: datetime
-
-class PartIn(BaseModel):
-    name: str
-    file: bytes
-    format: str

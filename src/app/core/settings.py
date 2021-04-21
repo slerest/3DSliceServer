@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     app_name: str = Field(..., env='APP_NAME')
     admin_email: str = Field(..., env='ADMIN_EMAIL')
     version: str = Field(..., env='VERSION')
+    description: str = Field(..., env='APP_DESCRIPTION')
     debug: bool = Field(..., env='DEBUG')
     api_prefix: str = Field(..., env='API_PREFIX')
     allowed_hosts: str = Field(..., env='ALLOWED_HOSTS')

@@ -1,9 +1,9 @@
 from pydantic import BaseModel
+from model.generics import DateTimeModelMixin, IDModelMixin
 
 # data from senvol.com
 
-class MaterialOut(BaseModel):
-    id: int
+class MaterialOut(DateTimeModelMixin, IDModelMixin):
     supplier: str
     name: str
     general_type: str
