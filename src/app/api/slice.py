@@ -5,13 +5,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from dependencies import auth
 from model.slice import SliceOut
+from model.material import MaterialOut
+from model.part import PartOut
+from model.slicer import SlicerOut
 
 router = APIRouter()
 
 @router.get("", response_model=List[SliceOut], name="slices:listslices")
-async def read_slices():
+async def read_slices() -> List[SliceOut]:
     a = await asyncio.sleep(1)
-    print(dir(router))
     # TODO
     # check in database if slicer is here
     # if not return 400
@@ -66,9 +68,11 @@ async def read_slices():
     )
     one_slice = SliceOut(
         gcode = "lol+gcode",
+        print_time = None,
+        slice_time = None,
         material = m,
         part = p,
         status = "sliced",
         slicer = one_slicer
     )
-    return List[one_slice]
+    return [one_slice]

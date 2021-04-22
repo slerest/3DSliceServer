@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 import datetime
 from enum import Enum
 from model.material import MaterialOut
@@ -19,8 +20,8 @@ class SliceStatus(str, Enum):
 
 class SliceOut(DateTimeModelMixin, IDModelMixin):
     gcode: str
-    print_time: datetime.timedelta = None
-    slice_time: datetime.timedelta = None
+    print_time: Optional[datetime.timedelta]
+    slice_time: Optional[datetime.timedelta]
     material: MaterialOut
     part: PartOut
     status: SliceStatus

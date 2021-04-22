@@ -13,7 +13,7 @@ def get_app() -> FastAPI:
             debug=s.debug,
             version=s.version,
             openapi_url=s.api_prefix + '/openapi.json',
-            docs_url=s.api_prefix + '/documentation')
+            docs_url=s.api_prefix + '/docs')
     
 
     app.add_middleware(
@@ -31,7 +31,7 @@ def get_app() -> FastAPI:
     #app.add_exception_handler(RequestValidationError, http422_error_handler)
 
     # TODO test things with API_PREFIX
-    app.include_router(api_router)
+    app.include_router(api_router, prefix=s.api_prefix)
     #
 
     return app

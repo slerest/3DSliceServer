@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 from model.generics import DateTimeModelMixin, IDModelMixin
 
@@ -7,7 +8,7 @@ class PartOut(DateTimeModelMixin, IDModelMixin):
     unit: str
     volume: float
     volume_support: float
-    file: bytes
+    file: Optional[bytes]
     format: str
     x: float
     y: float
