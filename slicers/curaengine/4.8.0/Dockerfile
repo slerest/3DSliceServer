@@ -38,4 +38,5 @@ WORKDIR "/curaengine/4.8.0/CuraEngine-4.8.0/build"
 RUN cmake .. && make
 
 # App
+WORKDIR "/usr/src/app"
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

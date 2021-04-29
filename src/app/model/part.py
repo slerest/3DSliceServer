@@ -6,8 +6,8 @@ from model.generics import DateTimeModelMixin, IDModelMixin
 class PartOut(DateTimeModelMixin, IDModelMixin):
     name: str
     unit: str
-    volume: float
-    volume_support: float
+    volume: Optional[float]
+    volume_support: Optional[float]
     file: Optional[bytes]
     format: str
     x: float
