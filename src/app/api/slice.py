@@ -11,7 +11,7 @@ from model.slicer import SlicerOut
 
 router = APIRouter()
 
-@router.get("", response_model=List[SliceOut], name="slices:listslices")
+@router.get("", response_model=List[SliceOut], name="slices:list-slices")
 async def read_slices() -> List[SliceOut]:
     a = await asyncio.sleep(1)
     # TODO

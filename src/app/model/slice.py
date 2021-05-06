@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from typing import Optional
 import datetime
 from enum import Enum

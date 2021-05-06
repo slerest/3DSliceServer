@@ -8,8 +8,12 @@ class PartOut(DateTimeModelMixin, IDModelMixin):
     unit: str
     volume: Optional[float]
     volume_support: Optional[float]
-    file: Optional[bytes]
     format: str
     x: float
     y: float
     z: float
+
+class PartIn(DateTimeModelMixin, IDModelMixin):
+    name: str
+    unit: str
+    format: str

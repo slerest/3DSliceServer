@@ -20,3 +20,6 @@ class Settings(BaseSettings):
     basic: bool = Field(..., env='AUTH_BASIC')
     bearer: bool = Field(..., env='AUTH_BEARER')
     api_key: bool = Field(..., env='AUTH_API_KEY')
+    # Path
+    path_definition_files: str = Field(..., env='PATH_DEFINITION_FILES')
+    path_curaengine: str = Field(..., env='PATH_CURAENGINE')

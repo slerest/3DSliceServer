@@ -37,6 +37,10 @@ RUN mkdir "/curaengine/4.8.0/CuraEngine-4.8.0/build"
 WORKDIR "/curaengine/4.8.0/CuraEngine-4.8.0/build"
 RUN cmake .. && make
 
+# Push definitions files
+RUN mkdir /resources
+COPY ./definitions/. /resources/definitions/
+
 # App
 WORKDIR "/usr/src/app"
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
