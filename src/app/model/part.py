@@ -9,11 +9,11 @@ class PartOut(DateTimeModelMixin, IDModelMixin):
     volume: Optional[float]
     volume_support: Optional[float]
     format: str
-    x: float
-    y: float
-    z: float
+    x: Optional[float]
+    y: Optional[float]
+    z: Optional[float]
 
-class PartIn(DateTimeModelMixin, IDModelMixin):
+class PartIn(BaseModel):
     name: str
     unit: str
-    format: str
+    format: str # TODO doit etre un enum

@@ -1,0 +1,11 @@
+SELECT (
+	"ID",
+	"NAME",
+	"UNIT",
+	"FORMAT",
+	"VOLUME",
+	"VOLUME_SUPPORT",
+	"X",
+	"Y",
+	"Z"
+) FROM "3DSLICESERVER"."PART";
