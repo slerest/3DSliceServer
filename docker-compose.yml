@@ -15,7 +15,7 @@ services:
         image: 3d_slice_server:0.1
         env_file: ./src/.env
         networks:
-            - db-net
+            - db
             - traefik-inside
         volumes:
             - ./src/app:/usr/src/app
@@ -39,7 +39,7 @@ services:
         image: curaengine:4.8.0
         env_file: ./slicers/curaengine/4.8.0/.env
         networks:
-            - db-net
+            - db
             - traefik-inside
         volumes:
             - ./slicers/curaengine/4.8.0/app:/usr/src/app
@@ -59,7 +59,9 @@ services:
         image: db
         env_file: ./db/.env
         networks:
-            - db-net
+            db:
+                aliases:
+                    - db
         volumes:
             - db:/var/lib/postgresql/data/
 
@@ -76,7 +78,7 @@ services:
         volumes:
             - pgadmin:/root/.pgadmin
         networks:
-            - db-net
+            - db
             - traefik-inside
         labels:
             - "traefik.enable=true"
@@ -110,8 +112,8 @@ networks:
     name: traefik-inside
   traefik-outside:
     name: traefik-outside
-  db-net:
-    name: db-net
+  db:
+    name: db
 
 # ----------------------- VOLUMES -----------------------
 volumes:

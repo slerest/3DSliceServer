@@ -5,7 +5,7 @@ url = 'http://localhost/slice-server/api/0.0/parts'
 body = {
     'name':'a good name',
     'unit': 'mm',
-    'format': '.stl'
+    'format': 'stl'
 }
 
 h = {"Accept": "application/json"}

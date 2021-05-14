@@ -4,6 +4,8 @@ FROM ubuntu:20.04
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+RUN apt-get install -y apt-transport-https
+
 # Refresh package list
 RUN apt-get update -y  --fix-missing
 RUN apt-get clean

@@ -4,10 +4,10 @@ import time
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from dependencies import auth
-from model.slice import SliceOut
-from model.material import MaterialOut
-from model.part import PartOut
-from model.slicer import SlicerOut
+from schema.slice import SliceOut
+from schema.material import MaterialOut
+from schema.part import PartOut
+from schema.slicer import SlicerOut
 
 router = APIRouter()
 

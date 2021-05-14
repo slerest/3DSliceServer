@@ -5,19 +5,40 @@ from fastapi import (
     File,
     UploadFile
 )
+from sqlalchemy.orm import Session
 import logging
 from typing import List
-from model.part import PartOut, PartIn
+from schema.part import PartOut, PartIn
+from model.part import Part
 from core.settings import settings
-from core.db_session import db
 from core.utils import get_queries
-
+from crud.part import create_part as crud_create_part
+from core.database import SessionLocal
+from dependencies.database import get_db
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # Pour creer une part
 # create part
 # post file part with id of creating part
+
+@router.post("", response_model=PartOut, name="parts:post-part")
+async def create_part(part: PartIn, db: Session = Depends(get_db)) -> PartOut:
+    #p = Part(part.name, part.unit, part.format)
+    #logger.info(dir(p))
+    crud_create_part(db, part)
+    return PartOut(
+        name = part.name,
+        unit = part.unit,
+        volume = None,
+        volume_support = None,
+        format = part.format,
+        x = None,
+        y = None,
+        z = None
+    )
+
+'''
 
 @router.get("", response_model=List[PartOut], name="parts:list-parts")
 async def read_parts() -> List[PartOut]:
@@ -73,3 +94,4 @@ async def create_part(part: PartIn) -> PartOut:
 @router.post("/upload-file/{id_part}", name="parts:post-part-file")
 async def upload_file_part(id_part: int, stl_file: UploadFile = File(...)):
         return {"filename": file.filename}
+'''

@@ -4,7 +4,6 @@ from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 
 from core.settings import settings
-from core.db_session import db
 
 from api.routes import router as api_router
 
@@ -43,6 +42,7 @@ logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 # get root logger
 logger = logging.getLogger(__name__)
 
+'''
 @app.on_event("startup")
 async def startup():
     await db.connect()
@@ -50,6 +50,7 @@ async def startup():
 @app.on_event("shutdown")
 async def startup():
     await db.close()
+'''
 
 dumb_router = APIRouter()
 

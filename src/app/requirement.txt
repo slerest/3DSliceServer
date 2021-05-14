@@ -2,7 +2,9 @@ requests>=2.25.1
 fastapi==0.63.0
 pydantic==1.8.1
 uvicorn[standard]==0.13.4
+SQLAlchemy==1.4.15
 asyncpg==0.22.0 
+psycopg2-binary==2.8.6
 aiosql==3.2.0
 numpy-stl==2.16.0
 python-multipart==0.0.5

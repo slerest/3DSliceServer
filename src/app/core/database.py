@@ -1,11 +1,35 @@
+'''
 import asyncpg
-import logging
 import asyncpg
-
+'''
 from core.settings import settings
+import logging
+
+
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+'''
+SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}".format(
+        user=settings.db_user,
+        password=settings.db_password,
+        host=settings.db_host,
+        port=settings.db_port,
+        db_name=settings.db_name
+)
+'''
 
 logger = logging.getLogger(__name__)
 
+SQLALCHEMY_DATABASE_URL = settings.db_conn
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+meta = MetaData(schema="3DSLICESERVER")
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
+
+'''
 class Database:
     def __init__(self):
         self.user = settings.db_user
@@ -49,3 +73,4 @@ class Database:
 
     async def close(self):
         await self._connection_pool.close()
+'''

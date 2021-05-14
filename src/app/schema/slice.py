@@ -1,10 +1,10 @@
 from typing import Optional
 import datetime
 from enum import Enum
-from model.material import MaterialOut
-from model.part import PartOut
-from model.slicer import SlicerOut
-from model.generics import DateTimeModelMixin, IDModelMixin
+from schema.material import MaterialOut
+from schema.part import PartOut
+from schema.slicer import SlicerOut
+from schema.generics import DateTimeModelMixin, IDModelMixin
 
 class SliceStatus(str, Enum):
     sliced = "sliced"
