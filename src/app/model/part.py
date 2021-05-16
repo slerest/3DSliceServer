@@ -1,9 +1,10 @@
 #from core.database import Base
 from core.settings import settings
 from model.base import BaseModel
+from schema.part import PartOut
 from sqlalchemy import (
     Column,
-    Integer,
+    BigInteger,
     String,
     Float,
     LargeBinary
@@ -15,6 +16,7 @@ class Part(BaseModel):
     name = Column('NAME', String, nullable=False)
     unit = Column('UNIT', String, nullable=False)
     file = Column('FILE', LargeBinary, default=None)
+    file_size = Column('FILE_SIZE', BigInteger, default=None)
     format = Column('FORMAT', String, nullable=False)
     volume = Column('VOLUME', Float, default=None)
     volume_support = Column('VOLUME_SUPPORT', Float, default=None)
@@ -27,26 +29,18 @@ class Part(BaseModel):
         self.unit = unit
         self.format = format
 
-    def __str__(self):
-        s = '''
-        id={id},
-        name={name},
-        unit={unit},
-        file={file},
-        format={format},
-        volume={volume},
-        volume_support={volume_support},
-        x =={x},
-        y =={y},
-        z =={z}'''.format(
-            id=self.id,
-            name=self.name,
-            unit=self.unit,
-            file=self.file,
-            format=self.format,
-            volume=self.volume,
-            volume_support=self.volume_support,
-            x=self.x,
-            y=self.y,
-            z=self.z)
-        return s
+    def ToPartOut(self) -> PartOut:
+        return PartOut(
+            id = self.id,
+            name = self.name,
+            unit = self.unit,
+            file_size = self.file_size,
+            volume = self.volume,
+            volume_support = self.volume_support,
+            format = self.format,
+            x = self.x,
+            y = self.y,
+            z = self.z,
+            created_at = self.created_at,
+            updated_at = self.updated_at
+        )
