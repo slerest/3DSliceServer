@@ -15,12 +15,25 @@ from core.utils import get_queries
 import crud.part as crud_part
 from core.database import SessionLocal
 from dependencies.database import get_db
+
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # Pour creer une part
 # create part
 # post file part with id of creating part
+
+@router.get("", response_model=List[PartOut], name="parts:list-parts")
+async def list_parts(db: Session = Depends(get_db)) -> List[PartOut]:
+    all_p = crud_part.list_parts(db)
+    for i, p in enumerate(all_p):
+        all_p[i] = all_p[i].ToPartOut()
+    return all_p
+
+@router.get("/{id_part}", response_model=PartOut, name="parts:get-part")
+async def get_part(id_part: int, db: Session = Depends(get_db)) -> PartOut:
+    p = crud_part.get_part(id_part, db)
+    return p.ToPartOut()
 
 @router.post("", response_model=PartOut, name="parts:post-part")
 async def create_part(part: PartIn, db: Session = Depends(get_db)) -> PartOut:
@@ -38,6 +51,10 @@ async def upload_file_part(
     except Exception as e:
         raise e
     return p.ToPartOut()
+
+@router.delete("/{id_part}", status_code=204, name="parts:delete-part")
+async def delete_part(id_part: int, db: Session = Depends(get_db)):
+    p = crud_part.delete_part(id_part, db)
 
 '''
 
