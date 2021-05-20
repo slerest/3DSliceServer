@@ -13,7 +13,6 @@ from model.part import Part
 from core.settings import settings
 from core.utils import get_queries
 import crud.part as crud_part
-from core.database import SessionLocal
 from dependencies.database import get_db
 
 logger = logging.getLogger(__name__)

@@ -8,6 +8,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE TABLE "3DSLICESERVER"."USER" (
+	"ID" SERIAL PRIMARY KEY NOT NULL,
+	"USERNAME" varchar(255) NOT NULL,
+	"EMAIL" varchar(255) NOT NULL,
+	"PASSWORD" text NOT NULL,
+	"DISABLE" boolean DEFAULT TRUE,
+	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
+	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now()
+);
+
 CREATE TABLE "3DSLICESERVER"."TECHNOLOGIE" (
 	"ID" SERIAL PRIMARY KEY NOT NULL,
 	"NAME" varchar(255) NOT NULL
@@ -63,8 +73,6 @@ CREATE TABLE "3DSLICESERVER"."MATERIAL" (
 	"USP_CLASS_VI_CERTIFIED" boolean DEFAULT NULL, -- TODO certification qui correspond a quoi ?
 	"AVAILABILITY" boolean DEFAULT NULL -- TODO surement un bool, a check, on met string pour l'instant
 );
-
--- TODO Rajout de la taille memoire du fichier 
 
 CREATE TABLE "3DSLICESERVER"."PART" (
 	"ID" SERIAL PRIMARY KEY NOT NULL,

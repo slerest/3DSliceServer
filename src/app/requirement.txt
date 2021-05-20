@@ -8,3 +8,4 @@ psycopg2-binary==2.8.6
 aiosql==3.2.0
 numpy-stl==2.16.0
 python-multipart==0.0.5
+fastapi-jwt-auth==0.5.0

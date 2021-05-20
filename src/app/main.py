@@ -1,7 +1,10 @@
 import logging
 
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Request
 from fastapi.middleware.cors import CORSMiddleware
+
+from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import AuthJWTException
 
 from core.settings import settings
 
@@ -24,6 +27,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# callback to get your configuration
+@AuthJWT.load_config
+def get_config():
+    return settings
+
+@app.exception_handler(AuthJWTException)
+def authjwt_exception_handler(request: Request, exc: AuthJWTException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.message}
+    )
 
 #app.add_event_handler("startup", startup(app))
 #app.add_event_handler("shutdown", shutdown(app))
