@@ -2,7 +2,7 @@ import logging
 from sqlalchemy.orm import Session
 from schema.part import PartIn
 from model.part import Part
-from fastapi import HTTPException,HTTPException, UploadFile
+from fastapi import HTTPException, UploadFile
 
 logger = logging.getLogger(__name__)
 

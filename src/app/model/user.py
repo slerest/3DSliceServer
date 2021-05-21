@@ -1,4 +1,5 @@
 from model.base import BaseModel
+from pydantic import EmailStr
 from schema.user import UserOut
 from sqlalchemy import (
     Column,
@@ -19,7 +20,7 @@ class User(BaseModel):
         return UserOut(
             id = self.id,
             username = self.username,
-            email = self.email,
+            email = EmailStr(self.email),
             password = self.password,
             disable = self.disable,
             created_at = self.created_at,

@@ -34,7 +34,7 @@ async def get_part(id_part: int, db: Session = Depends(get_db)) -> PartOut:
     p = crud_part.get_part(id_part, db)
     return p.ToPartOut()
 
-@router.post("", response_model=PartOut, name="parts:post-part")
+@router.post("", response_model=PartOut, name="parts:create-part")
 async def create_part(part: PartIn, db: Session = Depends(get_db)) -> PartOut:
     p = crud_part.create_part(db, part)
     return p.ToPartOut()
