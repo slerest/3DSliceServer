@@ -5,17 +5,16 @@ import unittest
 
 class UserTest(unittest.TestCase):
 
-    '''
     def test_create_user(self):
         url = 'http://localhost/slice-server/api/0.0/users'
         h = {"Accept": "application/json"}
         body = {
             'username':'slerest',
-            'email':'slerest@gmail.com'
+            'email':'slerest@gmail.com',
+            'password':'ohohoho'
         }
         r = requests.post(url, headers=h, data=json.dumps(body))
         assert r.status_code == 200
-    '''
 
     def test_list_users(self):
         url = 'http://localhost/slice-server/api/0.0/users'

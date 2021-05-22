@@ -13,6 +13,7 @@ class UserOut(DateTimeModelMixin, IDModelMixin):
 class UserIn(BaseModel):
     username: str
     email: EmailStr
+    password: str
 
 class UserLogin(BaseModel):
     username: str

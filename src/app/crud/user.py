@@ -9,19 +9,14 @@ def login(user: UserLogin) -> bool:
     # username not exist
     if u is None:
         return False
-    #TODO SHA-256
-    hash_password = hashlib.pbkdf2_hmac(
-        'sha256', # The hash digest algorithm for HMAC
-        user.password.encode('utf-8'), # Convert the password to bytes
-        salt, # Provide the salt
-        100000 # It is recommended to use at least 100,000 iterations of SHA-256 
-    )
+    hash_password = hashlib.sha256(password.encode()).hexdigest()
     if u.password == hash_password:
         return True
     return False
 
 def create_user(u_in: UserIn, db: Session) -> User:
     u = User(**u_in.dict())
+    u.password = hashlib.sha256(u.password.encode()).hexdigest()
     db.add(u)
     db.commit()
     db.refresh(u)
