@@ -4,12 +4,12 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 import hashlib
 
-def login(user: UserLogin) -> bool:
+def login(user: UserLogin, db: Session) -> bool:
     u = db.query(User).filter(User.username == user.username).first()
     # username not exist
     if u is None:
         return False
-    hash_password = hashlib.sha256(password.encode()).hexdigest()
+    hash_password = hashlib.sha256(user.password.encode()).hexdigest()
     if u.password == hash_password:
         return True
     return False

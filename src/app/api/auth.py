@@ -1,12 +1,11 @@
 from fastapi import (
     APIRouter,
     Depends,
-    HTTPException.
+    HTTPException,
     Request
 )
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
-from fastapi_jwt_auth.exceptions import AuthJWTException
 
 from sqlalchemy.orm import Session
 import logging
@@ -19,9 +18,9 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # TODO on doit pouvoir se log avec username OU email
-@app.post('/login')
-def login(user: UserLogin, Authorize: AuthJWT = Depends()):
-    if not crud_user.login(user):
+@router.post('/login')
+def login(user: UserLogin, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    if not crud_user.login(user, db):
         raise HTTPException(status_code=401,detail="Bad username or password")
-    access_token = Authorize.create_access_token(subject=user.username)
-    return {"access_token": access_token}
+    token = Authorize.create_access_token(subject=user.username)
+    return {"token": token}

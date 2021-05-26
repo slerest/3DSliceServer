@@ -3,6 +3,8 @@ from fastapi import (
     Depends,
     Query
 )
+
+from fastapi_jwt_auth import AuthJWT
 import logging
 from typing import List
 from sqlalchemy.orm import Session
@@ -27,8 +29,10 @@ async def list_users(
             title="Username",
             description="Query string for filter user by username",
         ),
+        Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> List[UserOut]:
 
+    Authorize.jwt_required()
     if email is not None:
         return [crud_user.get_user_by_email(email, db).ToUserOut()]
     if username is not None:
@@ -40,11 +44,20 @@ async def list_users(
 
 
 @router.get("/{id_user}", response_model=UserOut, name="users:get-user")
-async def get_user(id_user: int, db: Session = Depends(get_db)) -> UserOut:
+async def get_user(
+        id_user: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> UserOut:
+
+    Authorize.jwt_required()
     u = crud_user.get_user(id_user, db)
     return u.ToUserOut()
 
 @router.post("", response_model=UserOut, name="users:create-user")
-async def create_user(user: UserIn, db: Session = Depends(get_db)) -> UserOut:
+async def create_user(
+        user: UserIn,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> UserOut:
+
     u = crud_user.create_user(user, db)
     return u.ToUserOut()

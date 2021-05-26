@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import FastAPI, APIRouter, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi_jwt_auth import AuthJWT
