@@ -24,3 +24,10 @@ def login(user: UserLogin, Authorize: AuthJWT = Depends(), db: Session = Depends
         raise HTTPException(status_code=401,detail="Bad username or password")
     token = Authorize.create_access_token(subject=user.username)
     return {"token": token}
+
+@router.get('/refresh')
+def refresh(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+    new_access_token = Authorize.create_access_token(subject=current_user)
+    return {"token": new_access_token}
