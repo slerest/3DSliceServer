@@ -1,8 +1,13 @@
 from schema.user import UserLogin, UserIn
 from model.user import User
+from model.group import Group
+from model.user_group import UserGroup
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 import hashlib
+import logging
+
+logger = logging.getLogger(__name__)
 
 def login(user: UserLogin, db: Session) -> bool:
     u = db.query(User).filter(User.username == user.username).first()
@@ -51,3 +56,7 @@ def get_user_by_email(email: str, db: Session) -> User:
     if u is None:
         raise HTTPException(status_code=404, detail="User not found")
     return u
+
+def get_user_group(id_user: int, db: Session) -> Group:
+    g = db.query(Group).join(UserGroup).filter(UserGroup.user_id == id_user).all()
+    return g

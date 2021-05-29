@@ -22,8 +22,8 @@ class UserTest(unittest.TestCase):
         url = 'http://localhost/slice-server/api/0.0/users'
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
         body = {
-            'username':'slerest',
-            'email':'slerest@gmail.com',
+            'username':'user2',
+            'email':'user2@gmail.com',
             'password':'ohohoho'
         }
         r = requests.post(url, headers=h, data=json.dumps(body))
@@ -49,6 +49,12 @@ class UserTest(unittest.TestCase):
 
     def test_get_user_by_id(self):
         url = 'http://localhost/slice-server/api/0.0/users/1'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        r = requests.get(url, headers=h)
+        assert r.status_code == 200
+
+    def test_get_user_groups(self):
+        url = 'http://localhost/slice-server/api/0.0/users/2/groups'
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
         r = requests.get(url, headers=h)
         assert r.status_code == 200

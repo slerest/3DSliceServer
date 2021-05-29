@@ -5,16 +5,15 @@ from fastapi import (
 )
 
 from fastapi_jwt_auth import AuthJWT
-import logging
 from typing import List
 from sqlalchemy.orm import Session
 from schema.user import UserOut, UserIn
+from schema.group import GroupOut
 from dependencies.database import get_db
 import crud.user as crud_user
 from typing import Optional
 from pydantic import EmailStr
 
-logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("", response_model=List[UserOut], name="users:list-users")
@@ -37,10 +36,10 @@ async def list_users(
         return [crud_user.get_user_by_email(email, db).ToUserOut()]
     if username is not None:
         return [crud_user.get_user_by_username(username, db).ToUserOut()]
-    all_u = crud_user.list_users(db)
-    for i, u in enumerate(all_u):
-        all_u[i] = all_u[i].ToUserOut()
-    return all_u
+    users = crud_user.list_users(db)
+    for i, u in enumerate(users):
+        users[i] = users[i].ToUserOut()
+    return users
 
 
 @router.get("/{id_user}", response_model=UserOut, name="users:get-user")
@@ -52,6 +51,18 @@ async def get_user(
     Authorize.jwt_required()
     u = crud_user.get_user(id_user, db)
     return u.ToUserOut()
+
+@router.get("/{id_user}/groups", response_model=List[GroupOut], name="users:get-group")
+async def get_user_group(
+        id_user: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> List[GroupOut]:
+
+    Authorize.jwt_required()
+    groups = crud_user.get_user_group(id_user, db)
+    for i, g in enumerate(groups):
+        groups[i] = groups[i].ToGroupOut()
+    return groups
 
 @router.post("", response_model=UserOut, name="users:create-user")
 async def create_user(
