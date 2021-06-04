@@ -52,14 +52,14 @@ async def get_user(
     u = crud_user.get_user(id_user, db)
     return u.ToUserOut()
 
-@router.get("/{id_user}/groups", response_model=List[GroupOut], name="users:get-group")
-async def get_user_group(
+@router.get("/{id_user}/groups", response_model=List[GroupOut], name="users:list-groups")
+async def list_groups_of_user(
         id_user: int,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> List[GroupOut]:
 
     Authorize.jwt_required()
-    groups = crud_user.get_user_group(id_user, db)
+    groups = crud_user.list_groups_of_user(id_user, db)
     for i, g in enumerate(groups):
         groups[i] = groups[i].ToGroupOut()
     return groups

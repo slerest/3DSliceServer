@@ -2,10 +2,10 @@ import requests
 import json
 import unittest
 
-class UserTest(unittest.TestCase):
+class GroupTest(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
-        super(UserTest, self).__init__(*args, **kwargs)
+        super(GroupTest, self).__init__(*args, **kwargs)
         # get token
         url = 'http://localhost/slice-server/api/0.0/auth/login'
         body = {
@@ -17,43 +17,36 @@ class UserTest(unittest.TestCase):
         assert r.status_code == 200
         self.token = r.json()['token']
 
-    def test_create_user(self):
-        url = 'http://localhost/slice-server/api/0.0/users'
+    def test_create_group(self):
+        url = 'http://localhost/slice-server/api/0.0/groups'
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
-        body = {
-            'username':'user2',
-            'email':'user2@gmail.com',
-            'password':'ohohoho'
-        }
+        body = {'name':'group42'}
         r = requests.post(url, headers=h, data=json.dumps(body))
         assert r.status_code == 200
+        url = 'http://localhost/slice-server/api/0.0/groups/' + str(r.json()['id'])
+        r = requests.delete(url, headers=h)
+        assert r.status_code == 204
 
-    def test_list_users(self):
-        url = 'http://localhost/slice-server/api/0.0/users'
+    def test_list_groups(self):
+        url = 'http://localhost/slice-server/api/0.0/groups'
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
-    def test_get_user_by_email(self):
-        url = 'http://localhost/slice-server/api/0.0/users?email=admin@admin.fr'
+    def test_get_group_by_name(self):
+        url = 'http://localhost/slice-server/api/0.0/groups?name=admin'
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
-    def test_get_user_by_username(self):
-        url = 'http://localhost/slice-server/api/0.0/users?username=admin'
+    def test_get_group_by_id(self):
+        url = 'http://localhost/slice-server/api/0.0/groups/1'
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
-    def test_get_user_by_id(self):
-        url = 'http://localhost/slice-server/api/0.0/users/1'
-        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
-        r = requests.get(url, headers=h)
-        assert r.status_code == 200
-
-    def test_get_groups_of_user(self):
-        url = 'http://localhost/slice-server/api/0.0/users/2/groups'
+    def test_get_users_of_group(self):
+        url = 'http://localhost/slice-server/api/0.0/groups/1/users'
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
         r = requests.get(url, headers=h)
         assert r.status_code == 200
