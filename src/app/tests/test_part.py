@@ -4,9 +4,22 @@ import unittest
 
 class PartTest(unittest.TestCase):
 
+    def __init__(self, *args, **kwargs):
+        super(PartTest, self).__init__(*args, **kwargs)
+        # get token
+        url = 'http://localhost/slice-server/api/0.0/auth/login'
+        body = {
+            'username':'admin',
+            'password': 'secret'
+        }
+        h = {"Accept": "application/json"}
+        r = requests.post(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 200
+        self.token = r.json()['token']
+
     def test_list_parts(self):
         url = 'http://localhost/slice-server/api/0.0/parts'
-        h = {"Accept": "application/json"}
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
@@ -14,11 +27,11 @@ class PartTest(unittest.TestCase):
          # CREATE PART
         url = 'http://localhost/slice-server/api/0.0/parts'
         body = {
-            'name':'a good name',
+            'name':'a_good_name',
             'unit': 'mm',
             'format': 'stl'
         }
-        h = {"Accept": "application/json"}
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
         r = requests.post(url, headers=h, data=json.dumps(body))
         assert r.status_code == 200
 
@@ -27,13 +40,21 @@ class PartTest(unittest.TestCase):
         url='http://localhost/slice-server/api/0.0/parts/upload-file/' + id_part
         f = open('file.stl','rb')
         files={'file_part': f}
-        r=requests.post(url, files=files)
+        r = requests.post(url, files=files)
         assert r.status_code == 200
         f.close()
 
         # GET THIS PART
         url = 'http://localhost/slice-server/api/0.0/parts/' + id_part
         r = requests.get(url, headers=h)
+        assert r.status_code == 200
+
+        # DOWNLOAD PART
+        url = 'http://localhost/slice-server/api/0.0/parts/upload-file/' + id_part
+        r = requests.get(url, headers=h)
+        f = open('./wowo.stl', 'wb')
+        f.write(r.content)
+        f.close()
         assert r.status_code == 200
 
         # DELETE THE PART

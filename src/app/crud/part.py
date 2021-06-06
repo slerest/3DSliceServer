@@ -1,4 +1,5 @@
 import logging
+import os
 from sqlalchemy.orm import Session
 from schema.part import PartIn
 from model.part import Part
@@ -24,6 +25,19 @@ def add_file_part(db: Session, id_part: int, data: bytes) -> Part:
     db.commit()
     db.refresh(p)
     return p
+
+def get_file_from_id(db: Session, id_part: int):
+    p = db.query(Part).filter(Part.id == id_part).first()
+    if p is None:
+        raise HTTPException(status_code=404, detail="Part not found")
+    path_tmp_file = '/tmp/' + str(p.id) + '.stl'
+    if os.path.isfile(path_tmp_file) == True:
+        os.remove(path_tmp_file)
+    f = open(path_tmp_file, 'wb')
+    f.write(p.file)
+    f.close()
+    return p, path_tmp_file
+
 
 def list_parts(db: Session) -> [Part]:
     p = db.query(Part).all()

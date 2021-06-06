@@ -5,17 +5,17 @@ from fastapi import (
     File,
     UploadFile
 )
-from sqlalchemy.orm import Session
-import logging
+from fastapi_jwt_auth import AuthJWT
 from typing import List
+from sqlalchemy.orm import Session
 from schema.part import PartOut, PartIn
 from model.part import Part
 from core.settings import settings
 from core.utils import get_queries
 import crud.part as crud_part
 from dependencies.database import get_db
+from fastapi.responses import FileResponse
 
-logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # Pour creer une part
@@ -23,7 +23,9 @@ router = APIRouter()
 # post file part with id of creating part
 
 @router.get("", response_model=List[PartOut], name="parts:list-parts")
-async def list_parts(db: Session = Depends(get_db)) -> List[PartOut]:
+async def list_parts(
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> List[PartOut]:
     all_p = crud_part.list_parts(db)
     for i, p in enumerate(all_p):
         all_p[i] = all_p[i].ToPartOut()
@@ -35,7 +37,10 @@ async def get_part(id_part: int, db: Session = Depends(get_db)) -> PartOut:
     return p.ToPartOut()
 
 @router.post("", response_model=PartOut, name="parts:create-part")
-async def create_part(part: PartIn, db: Session = Depends(get_db)) -> PartOut:
+async def create_part(
+        part: PartIn,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> PartOut:
     p = crud_part.create_part(db, part)
     return p.ToPartOut()
 
@@ -43,6 +48,7 @@ async def create_part(part: PartIn, db: Session = Depends(get_db)) -> PartOut:
 async def upload_file_part(
         id_part: int,
         file_part: UploadFile = File(...),
+        Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     data = await file_part.read()
     try:
@@ -50,6 +56,15 @@ async def upload_file_part(
     except Exception as e:
         raise e
     return p.ToPartOut()
+
+@router.get("/upload-file/{id_part}", name="parts:download-file-part")
+async def download_file_part(
+        id_part: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> PartOut:
+    p, path_tmp_file = crud_part.get_file_from_id(db, id_part)
+    h = {'format': p.format}
+    return FileResponse(path_tmp_file, headers=h, filename=p.name)
 
 @router.delete("/{id_part}", status_code=204, name="parts:delete-part")
 async def delete_part(id_part: int, db: Session = Depends(get_db)):
