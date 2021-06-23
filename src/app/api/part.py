@@ -57,7 +57,7 @@ async def upload_file_part(
         raise e
     return p.ToPartOut()
 
-@router.get("/upload-file/{id_part}", name="parts:download-file-part")
+@router.get("/download-file/{id_part}", name="parts:download-file-part")
 async def download_file_part(
         id_part: int,
         Authorize: AuthJWT = Depends(),

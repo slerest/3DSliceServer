@@ -44,7 +44,7 @@ async def get_group(
     return g.ToGroupOut()
 
 @router.get("/{id_group}/users", response_model=List[UserOut], name="groups:list-users")
-async def list_users_of_group(
+async def list_users_in_group(
         id_group: int,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> List[GroupOut]:
@@ -54,6 +54,26 @@ async def list_users_of_group(
     for i, u in enumerate(users):
         users[i] = users[i].ToUserOut()
     return users
+
+@router.post("/{id_group}/users/{id_user}", name="groups:add-user")
+async def add_user_in_group(
+        id_group: int,
+        id_user: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> List[GroupOut]:
+
+    Authorize.jwt_required()
+    crud_group.add_user_in_group(id_group, id_user, db)
+
+@router.delete("/{id_group}/users/{id_user}", status_code=204, name="groups:delete-user")
+async def delete_user_in_group(
+        id_group: int,
+        id_user: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> List[GroupOut]:
+
+    Authorize.jwt_required()
+    crud_group.delete_user_in_group(id_group, id_user, db)
 
 @router.post("", response_model=GroupOut, name="groups:create-group")
 async def create_group(

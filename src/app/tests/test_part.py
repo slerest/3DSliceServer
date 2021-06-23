@@ -1,6 +1,9 @@
 import requests
 import json
 import unittest
+import trimesh
+from pprint import pprint
+from os
 
 class PartTest(unittest.TestCase):
 
@@ -38,7 +41,7 @@ class PartTest(unittest.TestCase):
         # UPLOAD FILE TO PART
         id_part = str(r.json()['id'])
         url='http://localhost/slice-server/api/0.0/parts/upload-file/' + id_part
-        f = open('file.stl','rb')
+        f = open('FredTheCowboy.stl','rb')
         files={'file_part': f}
         r = requests.post(url, files=files)
         assert r.status_code == 200
@@ -50,17 +53,22 @@ class PartTest(unittest.TestCase):
         assert r.status_code == 200
 
         # DOWNLOAD PART
-        url = 'http://localhost/slice-server/api/0.0/parts/upload-file/' + id_part
+        url = 'http://localhost/slice-server/api/0.0/parts/download-file/' + id_part
         r = requests.get(url, headers=h)
-        f = open('./wowo.stl', 'wb')
+        f = open('./foo.stl', 'wb')
         f.write(r.content)
         f.close()
         assert r.status_code == 200
+
+        mesh = trimesh.load('./foo.stl')
 
         # DELETE THE PART
         url = 'http://localhost/slice-server/api/0.0/parts/' + id_part
         r = requests.delete(url, headers=h)
         assert r.status_code == 204
+
+        # DELETE LOCAL FILE
+        os.remove('./foo.stl')
 
 
 if __name__ == '__main__':

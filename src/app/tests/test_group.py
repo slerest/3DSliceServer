@@ -51,5 +51,13 @@ class GroupTest(unittest.TestCase):
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
+    def test_add_user_to_group(self):
+        url = 'http://localhost/slice-server/api/0.0/groups/1/users/1'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        r = requests.post(url, headers=h)
+        assert r.status_code == 200
+        r = requests.delete(url, headers=h)
+        assert r.status_code == 204
+
 if __name__ == '__main__':
     unittest.main()
