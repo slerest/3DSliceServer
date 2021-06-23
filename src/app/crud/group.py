@@ -40,16 +40,20 @@ def delete_group(id_group: int, db: Session):
     db.commit()
 
 def add_user_in_group(id_group: int, id_user: int, db: Session):
-    u_g = UserGroup(group_id=id_group, user_id=id_user)
-    db.add(u_g)
-    db.commit()
-    db.refresh(u_g)
+    try:
+        u_g = UserGroup(group_id=id_group, user_id=id_user)
+        db.add(u_g)
+        db.commit()
+        db.refresh(u_g)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail="Group or User not found")
+
 
 def delete_user_in_group(id_group: int, id_user: int, db: Session):
     u_g = db.query(UserGroup).filter(
             UserGroup.group_id == id_group,
             UserGroup.user_id == id_user).first()
     if u_g is None:
-        raise HTTPException(status_code=404, detail="User not in group")
+        raise HTTPException(status_code=404, detail="Group or User not found")
     db.delete(u_g)
     db.commit()

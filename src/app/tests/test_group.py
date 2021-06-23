@@ -59,5 +59,15 @@ class GroupTest(unittest.TestCase):
         r = requests.delete(url, headers=h)
         assert r.status_code == 204
 
+    def test_error_user_group(self):
+        url = 'http://localhost/slice-server/api/0.0/groups/1000/users/200'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        r = requests.post(url, headers=h)
+        assert r.status_code == 404
+        url = 'http://localhost/slice-server/api/0.0/groups/1000/users/200'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        r = requests.delete(url, headers=h)
+        assert r.status_code == 404
+
 if __name__ == '__main__':
     unittest.main()
