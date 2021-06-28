@@ -8,7 +8,7 @@ from fastapi import (
 from fastapi_jwt_auth import AuthJWT
 from typing import List
 from sqlalchemy.orm import Session
-from schema.part import PartOut, PartIn
+from schema.part import PartOut, PartIn, PartModify
 from model.part import Part
 from core.settings import settings
 from core.utils import get_queries
@@ -42,6 +42,15 @@ async def create_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     p = crud_part.create_part(db, part)
+    return p.ToPartOut()
+
+@router.put("/{id_part}", response_model=PartOut, name="parts:modify-part")
+async def modify_part(
+        id_part: int,
+        part: PartModify,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> PartOut:
+    p = crud_part.modify_part(db, id_part, part)
     return p.ToPartOut()
 
 @router.post("/upload-file/{id_part}",response_model=PartOut, name="parts:upload-file-part")

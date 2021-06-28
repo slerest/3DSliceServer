@@ -1,7 +1,7 @@
 import logging
 import os
 from sqlalchemy.orm import Session
-from schema.part import PartIn
+from schema.part import PartIn, PartModify
 from model.part import Part
 from fastapi import HTTPException, UploadFile
 
@@ -55,3 +55,14 @@ def delete_part(id_part: int, db: Session):
         raise HTTPException(status_code=404, detail="Part not found")
     db.delete(p)
     db.commit()
+
+def modify_part(db: Session, id_part: int, p_modify: PartModify):
+    p = db.query(Part).filter(Part.id == id_part).first()
+    if p is None:
+        raise HTTPException(status_code=404, detail="Part not found")
+    p.name = p_modify.name
+    p.unit = p_modify.unit
+    p.format: p_modify.format
+    db.commit()
+    db.refresh(p)
+    return p

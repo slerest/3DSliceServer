@@ -28,3 +28,8 @@ class PartIn(BaseModel):
     name: str
     unit: str
     format: PartFormat
+
+class PartModify(BaseModel):
+    name: str
+    unit: str
+    format: PartFormat

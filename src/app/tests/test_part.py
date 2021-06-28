@@ -3,7 +3,7 @@ import json
 import unittest
 import trimesh
 from pprint import pprint
-from os
+import os
 
 class PartTest(unittest.TestCase):
 
@@ -26,8 +26,39 @@ class PartTest(unittest.TestCase):
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
+    def test_modify_part(self):
+        # CREATE PART
+        url = 'http://localhost/slice-server/api/0.0/parts'
+        body = {
+            'name':'coucou',
+            'unit': 'mm',
+            'format': 'stl'
+        }
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        r = requests.post(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 200
+
+        # MODIFY PART
+        url = 'http://localhost/slice-server/api/0.0/parts/' + str(r.json()['id'])
+        body = {
+            'name':'WOWOWO',
+            'unit': 'mm',
+            'format': 'stl'
+        }
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        r = requests.put(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 200
+
+        # MODIFY PART
+        r = requests.get(url, headers=h)
+        assert r.status_code == 200
+
+        # DELETE THE PART
+        r = requests.delete(url, headers=h)
+        assert r.status_code == 204
+
     def test_full_part(self):
-         # CREATE PART
+        # CREATE PART
         url = 'http://localhost/slice-server/api/0.0/parts'
         body = {
             'name':'a_good_name',
