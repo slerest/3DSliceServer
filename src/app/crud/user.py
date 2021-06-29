@@ -1,5 +1,6 @@
 from schema.user import UserLogin, UserIn
 from model.user import User
+from model.permission import Permission
 from model.group import Group
 from model.user_group import UserGroup
 from sqlalchemy.orm import Session
@@ -56,3 +57,7 @@ def get_user_by_email(email: str, db: Session) -> User:
 def list_groups_of_user(id_user: int, db: Session) -> [Group]:
     g = db.query(Group).join(UserGroup).filter(UserGroup.user_id == id_user).all()
     return g
+
+def list_user_permissions(id_user: int, db: Session) -> [Permission]:
+    p = db.query(Permission).filter(Permission.user_id == id_user).all()
+    return p

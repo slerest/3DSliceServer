@@ -9,6 +9,7 @@ from sqlalchemy import (
     Float,
     LargeBinary
 )
+from sqlalchemy.orm import relationship
 
 class Part(BaseModel):
     __tablename__ = 'PART'
@@ -23,6 +24,7 @@ class Part(BaseModel):
     x = Column('X', Float, default=None)
     y = Column('Y', Float, default=None)
     z = Column('Z', Float, default=None)
+    part_permission = relationship("Permission", back_populates="part")
 
     def __init__(self, name, unit, format):
         self.name = name

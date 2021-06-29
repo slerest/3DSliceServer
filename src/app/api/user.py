@@ -8,6 +8,7 @@ from fastapi_jwt_auth import AuthJWT
 from typing import List
 from sqlalchemy.orm import Session
 from schema.user import UserOut, UserIn
+from schema.permission import PermissionOut
 from schema.group import GroupOut
 from dependencies.database import get_db
 import crud.user as crud_user
@@ -51,6 +52,18 @@ async def get_user(
     Authorize.jwt_required()
     u = crud_user.get_user(id_user, db)
     return u.ToUserOut()
+
+@router.get("/{id_user}/permission", response_model=List[PermissionOut], name="users:list-permission")
+async def list_user_permissions(
+        id_user: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> UserOut:
+
+    Authorize.jwt_required()
+    parts = crud_user.list_user_permissions(id_user, db)
+    for i, p in enumerate(parts):
+        parts[i] = parts[i].ToPermissionOut()
+    return parts
 
 @router.get("/{id_user}/groups", response_model=List[GroupOut], name="users:list-groups")
 async def list_groups_of_user(

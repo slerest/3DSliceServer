@@ -17,6 +17,7 @@ class User(BaseModel):
     disable = Column('DISABLE', Boolean, default=True, nullable=False)
     superuser = Column('SUPERUSER', Boolean, default=False, nullable=False)
     user_group = relationship("UserGroup", back_populates="user")
+    user_permission = relationship("Permission", back_populates="user")
 
     def ToUserOut(self) -> UserOut:
         return UserOut(
