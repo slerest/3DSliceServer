@@ -58,5 +58,11 @@ class UserTest(unittest.TestCase):
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
+    def test_get_permissions(self):
+        url = 'http://localhost/slice-server/api/0.0/users/2/permission'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        r = requests.get(url, headers=h)
+        assert r.status_code == 200
+
 if __name__ == '__main__':
     unittest.main()
