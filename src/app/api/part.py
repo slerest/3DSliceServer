@@ -13,8 +13,15 @@ from model.part import Part
 from core.settings import settings
 from core.utils import get_queries
 import crud.part as crud_part
+import crud.permission as crud_permission
 from dependencies.database import get_db
 from fastapi.responses import FileResponse
+from fastapi_jwt_auth import AuthJWT
+
+#TEST
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -26,13 +33,24 @@ router = APIRouter()
 async def list_parts(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> List[PartOut]:
-    all_p = crud_part.list_parts(db)
+    Authorize.jwt_required()
+    crud_permission.check_admin(db, Authorize.get_jwt_subject())
+    all_p = crud_part.list_parts(db, Authorize.get_jwt_subject())
     for i, p in enumerate(all_p):
         all_p[i] = all_p[i].ToPartOut()
     return all_p
 
 @router.get("/{id_part}", response_model=PartOut, name="parts:get-part")
-async def get_part(id_part: int, db: Session = Depends(get_db)) -> PartOut:
+async def get_part(
+        id_part: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> PartOut:
+    p_read, p_write = crud_permission.check_part_permission(
+            db,
+            Authorize.get_jwt_subject(),
+            id_part)
+    if p_read == False:
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.get_part(id_part, db)
     return p.ToPartOut()
 
@@ -41,6 +59,7 @@ async def create_part(
         part: PartIn,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
+    Authorize.jwt_required()
     p = crud_part.create_part(db, part)
     return p.ToPartOut()
 
@@ -50,6 +69,7 @@ async def modify_part(
         part: PartModify,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
+    Authorize.jwt_required()
     p = crud_part.modify_part(db, id_part, part)
     return p.ToPartOut()
 
@@ -59,6 +79,7 @@ async def upload_file_part(
         file_part: UploadFile = File(...),
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
+    Authorize.jwt_required()
     data = await file_part.read()
     try:
         p = crud_part.add_file_part(db, id_part, data)
@@ -71,12 +92,14 @@ async def download_file_part(
         id_part: int,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
+    Authorize.jwt_required()
     p, path_tmp_file = crud_part.get_file_from_id(db, id_part)
     h = {'format': p.format}
     return FileResponse(path_tmp_file, headers=h, filename=p.name)
 
 @router.delete("/{id_part}", status_code=204, name="parts:delete-part")
 async def delete_part(id_part: int, db: Session = Depends(get_db)):
+    Authorize.jwt_required()
     p = crud_part.delete_part(id_part, db)
 
 '''

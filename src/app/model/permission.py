@@ -8,16 +8,17 @@ from schema.permission import PermissionOut
 from sqlalchemy import (
     Column,
     Integer,
-    Boolean
+    Boolean,
+    ForeignKey
 )
 from sqlalchemy.orm import relationship
 
 class Permission(BaseModel):
     __tablename__ = 'PERMISSION'
 
-    user_id = Column('USER_ID', Integer, nullable=True)
-    group_id = Column('GROUP_ID', Integer, nullable=True)
-    part_id = Column('PART_ID', Integer)
+    user_id = Column('USER_ID', Integer, ForeignKey("USER.ID"), nullable=True)
+    group_id = Column('GROUP_ID', Integer, ForeignKey("GROUP.ID"), nullable=True)
+    part_id = Column('PART_ID', Integer, ForeignKey("PART.ID"))
     read = Column('READ', Boolean, default=False, nullable=False)
     write = Column('WRITE', Boolean, default=False, nullable=False)
     user = relationship("User", back_populates="user_permission")

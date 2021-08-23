@@ -18,11 +18,18 @@ class PartTest(unittest.TestCase):
         h = {"Accept": "application/json"}
         r = requests.post(url, headers=h, data=json.dumps(body))
         assert r.status_code == 200
-        self.token = r.json()['token']
+        self.token_admin = r.json()['token']
+        body = {
+            'username':'regular',
+            'password': 'secret'
+        }
+        r = requests.post(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 200
+        self.token_regular = r.json()['token']
 
     def test_list_parts(self):
         url = 'http://localhost/slice-server/api/0.0/parts'
-        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_admin}
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
@@ -34,7 +41,7 @@ class PartTest(unittest.TestCase):
             'unit': 'mm',
             'format': 'stl'
         }
-        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_admin}
         r = requests.post(url, headers=h, data=json.dumps(body))
         assert r.status_code == 200
 
@@ -45,7 +52,7 @@ class PartTest(unittest.TestCase):
             'unit': 'mm',
             'format': 'stl'
         }
-        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_admin}
         r = requests.put(url, headers=h, data=json.dumps(body))
         assert r.status_code == 200
 
@@ -65,7 +72,7 @@ class PartTest(unittest.TestCase):
             'unit': 'mm',
             'format': 'stl'
         }
-        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_admin}
         r = requests.post(url, headers=h, data=json.dumps(body))
         assert r.status_code == 200
 
@@ -101,6 +108,11 @@ class PartTest(unittest.TestCase):
         # DELETE LOCAL FILE
         os.remove('./foo.stl')
 
+    def test_get_part_no_permission(self):
+        url = 'http://localhost/slice-server/api/0.0/parts'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_regular}
+        r = requests.get(url, headers=h)
+        assert r.status_code == 403
 
 if __name__ == '__main__':
     unittest.main()

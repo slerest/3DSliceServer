@@ -1,8 +1,13 @@
 import logging
 import os
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from schema.part import PartIn, PartModify
 from model.part import Part
+from model.user import User
+from model.group import Group
+from model.user_group import UserGroup
+from model.permission import Permission
 from fastapi import HTTPException, UploadFile
 
 logger = logging.getLogger(__name__)
@@ -39,9 +44,32 @@ def get_file_from_id(db: Session, id_part: int):
     return p, path_tmp_file
 
 
-def list_parts(db: Session) -> [Part]:
-    p = db.query(Part).all()
-    return p
+def list_parts(db: Session, username: str) -> [Part]:
+    # TODO
+    u = db.query(User).filter(User.username == username).first()
+    if u is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    if u.superuser:
+        return db.query(Part).all()
+    grps = db.query(Group).join(UserGroup).filter(UserGroup.user_id == u.id).all()
+    logger.info("GRPS")
+    logger.info(grps)
+    g_ids = [g.id for g in grps]
+    logger.info("G_IDS")
+    logger.info(g_ids)
+    perm_read_user = db.query(Permission).filter(Permission.user_id == u.id).all()
+    logger.info("PERM_READ_USER")
+    logger.info(perm_read_user)
+    perm_read_users_group = db.query(Permission).filter(Permission.group_id._in(g_ids)).all()
+    logger.info("PERM_READ_USERS_GROUP")
+    logger.info(perm_read_users_group)
+    p = db.query(Part).filter(or_(Part.id.in_(part_id_perm_read), ))
+    # TODO lister que les part ou l'on a les droit read direct
+    # et aussi les part ou le groupe auquel on appartient a les droit read
+    # SELECT * FROM PART
+    # WHERE PART.ID IN (USER_DIRECT_PERM_READ)
+    # OR PART.ID (USER_GROUP_PERM_READ)
+    return p 
 
 def get_part(id_part: int, db: Session) -> Part:
     p = db.query(Part).filter(Part.id == id_part).first()
