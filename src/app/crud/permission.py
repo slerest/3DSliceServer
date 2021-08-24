@@ -6,11 +6,6 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from typing import Tuple
 
-#TEST
-import logging
-
-logger = logging.getLogger(__name__)
-
 def check_part_permission(
         db: Session,
         username: str,
@@ -34,7 +29,7 @@ def check_part_permission(
     groups_user = db.query(Group).join(UserGroup).filter(UserGroup.user_id == u.id).all()
     groups_user_id = [g.id for g in groups_user]
     res_read, res_write = False, False
-    for group_user in groups_user:
+    for g in groups_user:
         p = db.query(Permission).filter(
                 Permission.part_id == id_part,
                 Permission.group_id == g.id).first()

@@ -45,7 +45,14 @@ class PermissionTest(unittest.TestCase):
         token = login_regular(1)
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + token}
         r = requests.get(url, headers=h)
-        assert r.status_code == 401
+        assert r.status_code == 200
+
+    def test_regular_authorized_read_by_group(self):
+        url = 'http://localhost/slice-server/api/0.0/parts/7'
+        token = login_regular(7)
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + token}
+        r = requests.get(url, headers=h)
+        assert r.status_code == 200
 
 if __name__ == '__main__':
     unittest.main()

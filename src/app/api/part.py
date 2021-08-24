@@ -18,11 +18,6 @@ from dependencies.database import get_db
 from fastapi.responses import FileResponse
 from fastapi_jwt_auth import AuthJWT
 
-#TEST
-import logging
-
-logger = logging.getLogger(__name__)
-
 router = APIRouter()
 
 # Pour creer une part
