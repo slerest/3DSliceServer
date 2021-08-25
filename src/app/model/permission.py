@@ -27,12 +27,16 @@ class Permission(BaseModel):
 
     def ToPermissionOut(self, db: Session) -> PermissionOut:
         g = db.query(Group).filter(Group.id == self.group_id).first()
+        if g is not None:
+            g = g.ToGroupOut()
         u = db.query(User).filter(User.id == self.user_id).first()
+        if u is not None:
+            u = u.ToUserOut()
         p = db.query(Part).filter(Part.id == self.part_id).first()
         return PermissionOut(
             id = self.id,
-            user = u.ToUserOut(),
-            group = g.ToGroupOut(),
+            user = u,
+            group = g,
             part = p.ToPartOut(),
             read = self.read,
             write = self.write,

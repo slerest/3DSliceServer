@@ -20,7 +20,7 @@ class PartTest(unittest.TestCase):
         assert r.status_code == 200
         self.token_admin = r.json()['token']
         body = {
-            'username':'regular',
+            'username':'regular_1',
             'password': 'secret'
         }
         r = requests.post(url, headers=h, data=json.dumps(body))
@@ -61,6 +61,23 @@ class PartTest(unittest.TestCase):
         assert r.status_code == 200
 
         # DELETE THE PART
+        r = requests.delete(url, headers=h)
+        assert r.status_code == 204
+
+    def test_create_part(self):
+        # CREATE PART
+        url = 'http://localhost/slice-server/api/0.0/parts'
+        body = {
+            'name':'a_good_name',
+            'unit': 'mm',
+            'format': 'stl'
+        }
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_admin}
+        r = requests.post(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 200
+        # DELETE THE PART
+        id_part = str(r.json()['id'])
+        url = 'http://localhost/slice-server/api/0.0/parts/' + id_part
         r = requests.delete(url, headers=h)
         assert r.status_code == 204
 

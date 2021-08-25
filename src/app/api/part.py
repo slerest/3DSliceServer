@@ -20,10 +20,6 @@ from fastapi_jwt_auth import AuthJWT
 
 router = APIRouter()
 
-# Pour creer une part
-# create part
-# post file part with id of creating part
-
 @router.get("", response_model=List[PartOut], name="parts:list-parts")
 async def list_parts(
         Authorize: AuthJWT = Depends(),
@@ -40,10 +36,9 @@ async def get_part(
         id_part: int,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
+    Authorize.jwt_required()
     p_read, p_write = crud_permission.check_part_permission(
-            db,
-            Authorize.get_jwt_subject(),
-            id_part)
+                        db, Authorize.get_jwt_subject(), id_part)
     if p_read == False:
         raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.get_part(id_part, db)
@@ -56,6 +51,7 @@ async def create_part(
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
     p = crud_part.create_part(db, part)
+    perm = crud_permission.create_permission(db, p.id, Authorize.get_jwt_subject())
     return p.ToPartOut()
 
 @router.put("/{id_part}", response_model=PartOut, name="parts:modify-part")
@@ -93,7 +89,10 @@ async def download_file_part(
     return FileResponse(path_tmp_file, headers=h, filename=p.name)
 
 @router.delete("/{id_part}", status_code=204, name="parts:delete-part")
-async def delete_part(id_part: int, db: Session = Depends(get_db)):
+async def delete_part(
+        id_part: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)):
     Authorize.jwt_required()
     p = crud_part.delete_part(id_part, db)
 

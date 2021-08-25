@@ -46,3 +46,23 @@ def check_admin(db: Session, username: str):
     if u.superuser is False:
         raise HTTPException(status_code=401, detail="Unauthorized access")
     return True
+
+def create_permission(
+        db: Session,
+        id_part: int,
+        username: str,
+        read=True,
+        write=True):
+    u = db.query(User).filter(User.username == username).first()
+    if u is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    perm = Permission(
+            user_id=u.id,
+            group_id=None,
+            part_id=id_part,
+            read=read,
+            write=write)
+    db.add(perm)
+    db.commit()
+    db.refresh(perm)
+    return perm.ToPermissionOut(db)
