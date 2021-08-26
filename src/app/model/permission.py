@@ -21,6 +21,7 @@ class Permission(BaseModel):
     part_id = Column('PART_ID', Integer, ForeignKey("PART.ID"))
     read = Column('READ', Boolean, default=False, nullable=False)
     write = Column('WRITE', Boolean, default=False, nullable=False)
+    delete = Column('DELETE', Boolean, default=False, nullable=False)
     user = relationship("User", back_populates="user_permission")
     group = relationship("Group", back_populates="group_permission")
     part = relationship("Part", back_populates="part_permission")
@@ -40,6 +41,7 @@ class Permission(BaseModel):
             part = p.ToPartOut(),
             read = self.read,
             write = self.write,
+            delete = self.delete,
             created_at = self.created_at,
             updated_at = self.updated_at
         )

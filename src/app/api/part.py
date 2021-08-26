@@ -37,9 +37,8 @@ async def get_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
-    p_read, p_write = crud_permission.check_part_permission(
-                        db, Authorize.get_jwt_subject(), id_part)
-    if p_read == False:
+    r = crud_permission.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    if r.read == False:
         raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.get_part(id_part, db)
     return p.ToPartOut()
@@ -51,7 +50,7 @@ async def create_part(
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
     p = crud_part.create_part(db, part)
-    perm = crud_permission.create_permission(db, p.id, Authorize.get_jwt_subject())
+    perm = crud_permission.create_permission_user(db, p.id, Authorize.get_jwt_subject())
     return p.ToPartOut()
 
 @router.put("/{id_part}", response_model=PartOut, name="parts:modify-part")

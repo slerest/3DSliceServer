@@ -10,3 +10,12 @@ class PermissionOut(DateTimeModelMixin, IDModelMixin):
     part: Optional[PartOut]
     read: bool = False
     write: bool = False
+    delete: bool = False
+
+class Rights():
+
+    def __init__(self, read=True, write=True, delete=True):
+        self.read = read
+        self.write = write
+        self.delete = delete
+

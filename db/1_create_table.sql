@@ -94,6 +94,7 @@ CREATE TABLE "3DSLICESERVER"."PERMISSION" (
 	"PART_ID" integer NOT NULL,
 	"READ" boolean DEFAULT FALSE,
 	"WRITE" boolean DEFAULT FALSE,
+	"DELETE" boolean DEFAULT FALSE,
 	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
 	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
 
