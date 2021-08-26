@@ -95,7 +95,7 @@ class PartTest(unittest.TestCase):
 
         # UPLOAD FILE TO PART
         id_part = str(r.json()['id'])
-        url='http://localhost/slice-server/api/0.0/parts/upload-file/' + id_part
+        url='http://localhost/slice-server/api/0.0/parts/file/' + id_part
         f = open('FredTheCowboy.stl','rb')
         files={'file_part': f}
         r = requests.post(url, files=files)
@@ -108,7 +108,7 @@ class PartTest(unittest.TestCase):
         assert r.status_code == 200
 
         # DOWNLOAD PART
-        url = 'http://localhost/slice-server/api/0.0/parts/download-file/' + id_part
+        url = 'http://localhost/slice-server/api/0.0/parts/file/' + id_part
         r = requests.get(url, headers=h)
         f = open('./foo.stl', 'wb')
         f.write(r.content)

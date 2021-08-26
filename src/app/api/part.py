@@ -63,13 +63,16 @@ async def modify_part(
     p = crud_part.modify_part(db, id_part, part)
     return p.ToPartOut()
 
-@router.post("/upload-file/{id_part}",response_model=PartOut, name="parts:upload-file-part")
+@router.post("/file/{id_part}",response_model=PartOut, name="parts:upload-file-part")
 async def upload_file_part(
         id_part: int,
         file_part: UploadFile = File(...),
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
+    r = crud_permission.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    if r.write == False:
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     data = await file_part.read()
     try:
         p = crud_part.add_file_part(db, id_part, data)
@@ -77,12 +80,15 @@ async def upload_file_part(
         raise e
     return p.ToPartOut()
 
-@router.get("/download-file/{id_part}", name="parts:download-file-part")
+@router.get("/file/{id_part}", name="parts:download-file-part")
 async def download_file_part(
         id_part: int,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
+    r = crud_permission.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    if r.read == False:
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     p, path_tmp_file = crud_part.get_file_from_id(db, id_part)
     h = {'format': p.format}
     return FileResponse(path_tmp_file, headers=h, filename=p.name)
@@ -93,6 +99,9 @@ async def delete_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)):
     Authorize.jwt_required()
+    r = crud_permission.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    if r.delete == False:
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.delete_part(id_part, db)
 
 '''
