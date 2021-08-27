@@ -7,6 +7,7 @@ class UserOut(DateTimeModelMixin, IDModelMixin):
     email: EmailStr
     disable: bool = True
     superuser: bool = False
+    create: bool = True
 
 class UserIn(BaseModel):
     username: str
@@ -14,6 +15,7 @@ class UserIn(BaseModel):
     password: str
     disable: Optional[bool]
     superuser: Optional[bool]
+    create: Optional[bool]
 
 class UserLogin(BaseModel):
     username: str

@@ -16,6 +16,7 @@ class User(BaseModel):
     password = Column('PASSWORD', String, nullable=False)
     disable = Column('DISABLE', Boolean, default=True, nullable=False)
     superuser = Column('SUPERUSER', Boolean, default=False, nullable=False)
+    create = Column('CREATE', Boolean, default=True, nullable=False)
     user_group = relationship("UserGroup", back_populates="user")
     user_permission = relationship("Permission", back_populates="user")
 

@@ -36,7 +36,7 @@ def get_file_from_id(db: Session, id_part: int):
     if p is None:
         raise HTTPException(status_code=404, detail="Part not found")
     path_tmp_file = '/tmp/' + str(p.id) + '.stl'
-    if os.path.isfile(path_tmp_file) == True:
+    if os.path.isfile(path_tmp_file):
         os.remove(path_tmp_file)
     f = open(path_tmp_file, 'wb')
     f.write(p.file)

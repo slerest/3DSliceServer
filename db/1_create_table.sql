@@ -33,6 +33,7 @@ FOR EACH ROW
 CREATE TABLE "3DSLICESERVER"."GROUP" (
 	"ID" SERIAL PRIMARY KEY NOT NULL,
 	"NAME" varchar(255) NOT NULL UNIQUE,
+	"CREATE" boolean DEFAULT TRUE,
 	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
 	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now()
 );
@@ -50,6 +51,7 @@ CREATE TABLE "3DSLICESERVER"."USER" (
 	"PASSWORD" text NOT NULL,
 	"DISABLE" boolean DEFAULT TRUE,
 	"SUPERUSER" boolean DEFAULT FALSE,
+	"CREATE" boolean DEFAULT TRUE,
 	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
 	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now()
 );

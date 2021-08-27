@@ -16,7 +16,7 @@ def check_part_right(
     if u is None:
         raise HTTPException(status_code=404, detail="User not found")
     # Check is user is super user, in that case, he has all the rights
-    if u.superuser == True:
+    if u.superuser:
         return Rights()
     # Get direct part's permission information
     p = db.query(Permission).filter(
@@ -45,7 +45,7 @@ def check_admin(db: Session, username: str):
     u = db.query(User).filter(User.username == username).first()
     if u is None:
         raise HTTPException(status_code=404, detail="User not found")
-    if u.superuser is False:
+    if not u.superuser:
         raise HTTPException(status_code=401, detail="Unauthorized access")
     return True
 
@@ -70,3 +70,14 @@ def create_permission_user(
     db.commit()
     db.refresh(perm)
     return perm.ToPermissionOut(db)
+
+def check_user_permission_create(db: Session, username: str):
+    c = False
+    u = db.query(User).filter(User.username == username).first()
+    if u is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    c = u.create
+    groups = db.query(Group).join(UserGroup).filter(UserGroup.user_id == id_user).all()
+    for g in groups:
+        c = True if g.create else c
+    return c
