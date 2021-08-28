@@ -62,7 +62,7 @@ async def list_user_permissions(
     Authorize.jwt_required()
     parts = crud_user.list_user_permissions(id_user, db)
     for i, p in enumerate(parts):
-        parts[i] = parts[i].ToPermissionOut()
+        parts[i] = parts[i].ToPermissionOut(db)
     return parts
 
 @router.get("/{id_user}/groups", response_model=List[GroupOut], name="users:list-groups")

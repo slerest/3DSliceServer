@@ -12,6 +12,7 @@ class Group(BaseModel):
     name = Column('NAME', String, nullable=False, unique=True)
     group_user = relationship("UserGroup", back_populates="group")
     group_permission = relationship("Permission", back_populates="group")
+    group_permission_part = relationship("PermissionPart", back_populates="group")
 
     def ToGroupOut(self) -> GroupOut:
         return GroupOut(

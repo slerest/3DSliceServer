@@ -13,6 +13,7 @@ from model.part import Part
 from core.settings import settings
 from core.utils import get_queries
 import crud.part as crud_part
+import crud.permission_part as crud_permission_part
 import crud.permission as crud_permission
 from dependencies.database import get_db
 from fastapi.responses import FileResponse
@@ -25,7 +26,7 @@ async def list_parts(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> List[PartOut]:
     Authorize.jwt_required()
-    crud_permission.check_admin(db, Authorize.get_jwt_subject())
+    crud_permission_part.check_admin(db, Authorize.get_jwt_subject())
     all_p = crud_part.list_parts(db, Authorize.get_jwt_subject())
     for i, p in enumerate(all_p):
         all_p[i] = all_p[i].ToPartOut()
@@ -37,7 +38,7 @@ async def get_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
-    r = crud_permission.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    r = crud_permission_part.check_part_right(db, Authorize.get_jwt_subject(), id_part)
     if not r.read:
         raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.get_part(id_part, db)
@@ -52,7 +53,7 @@ async def create_part(
     if not check_user_permission_create(db, Authorize.get_jwt_subject()):
         raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.create_part(db, part)
-    perm = crud_permission.create_permission_user(db, p.id, Authorize.get_jwt_subject())
+    perm = crud_permission.create_permission_part_user(db, p.id, Authorize.get_jwt_subject())
     return p.ToPartOut()
 
 @router.put("/{id_part}", response_model=PartOut, name="parts:modify-part")
@@ -62,6 +63,9 @@ async def modify_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
+    r = crud_permission_part.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    if not r.write:
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.modify_part(db, id_part, part)
     return p.ToPartOut()
 
@@ -72,7 +76,7 @@ async def upload_file_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
-    r = crud_permission.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    r = crud_permission_part.check_part_right(db, Authorize.get_jwt_subject(), id_part)
     if not r.write:
         raise HTTPException(status_code=401, detail="Unauthorized access")
     data = await file_part.read()
@@ -88,7 +92,7 @@ async def download_file_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
-    r = crud_permission.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    r = crud_permission_part.check_part_right(db, Authorize.get_jwt_subject(), id_part)
     if not r.read:
         raise HTTPException(status_code=401, detail="Unauthorized access")
     p, path_tmp_file = crud_part.get_file_from_id(db, id_part)
@@ -101,7 +105,7 @@ async def delete_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)):
     Authorize.jwt_required()
-    r = crud_permission.check_part_right(db, Authorize.get_jwt_subject(), id_part)
+    r = crud_permission_part.check_part_right(db, Authorize.get_jwt_subject(), id_part)
     if not r.delete:
         raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.delete_part(id_part, db)

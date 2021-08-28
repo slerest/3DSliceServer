@@ -1,9 +1,7 @@
 from model.base import BaseModel
 from model.user import User
 from model.group import Group
-from model.part import Part
 from sqlalchemy.orm import Session
-from pydantic import EmailStr
 from schema.permission import PermissionOut
 from sqlalchemy import (
     Column,
@@ -18,13 +16,15 @@ class Permission(BaseModel):
 
     user_id = Column('USER_ID', Integer, ForeignKey("USER.ID"), nullable=True)
     group_id = Column('GROUP_ID', Integer, ForeignKey("GROUP.ID"), nullable=True)
-    part_id = Column('PART_ID', Integer, ForeignKey("PART.ID"))
-    read = Column('READ', Boolean, default=False, nullable=False)
-    write = Column('WRITE', Boolean, default=False, nullable=False)
-    delete = Column('DELETE', Boolean, default=False, nullable=False)
+    create_part = Column('CREATE_PART', Boolean, default=True, nullable=False)
+    create_user = Column('CREATE_USER', Boolean, default=False, nullable=False)
+    modify_user = Column('MODIFY_USER', Boolean, default=False, nullable=False)
+    supress_user = Column('SUPRESS_USER', Boolean, default=False, nullable=False)
+    create_group = Column('CREATE_GROUP', Boolean, default=False, nullable=False)
+    modify_group = Column('MODIFY_GROUP', Boolean, default=False, nullable=False)
+    supress_group = Column('SUPRESS_GROUP', Boolean, default=False, nullable=False)
     user = relationship("User", back_populates="user_permission")
     group = relationship("Group", back_populates="group_permission")
-    part = relationship("Part", back_populates="part_permission")
 
     def ToPermissionOut(self, db: Session) -> PermissionOut:
         g = db.query(Group).filter(Group.id == self.group_id).first()
@@ -33,15 +33,17 @@ class Permission(BaseModel):
         u = db.query(User).filter(User.id == self.user_id).first()
         if u is not None:
             u = u.ToUserOut()
-        p = db.query(Part).filter(Part.id == self.part_id).first()
         return PermissionOut(
             id = self.id,
             user = u,
             group = g,
-            part = p.ToPartOut(),
-            read = self.read,
-            write = self.write,
-            delete = self.delete,
+            create_part = self.create_part,
+            create_user = self.create_user,
+            modify_user = self.modify_user,
+            supress_user = self.supress_user,
+            create_group = self.create_group,
+            modify_group = self.modify_group,
+            supress_group = self.supress_group,
             created_at = self.created_at,
             updated_at = self.updated_at
         )
