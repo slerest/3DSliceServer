@@ -7,7 +7,7 @@ from model.part import Part
 from model.user import User
 from model.group import Group
 from model.user_group import UserGroup
-from model.permission import Permission
+from model.permission_part import PermissionPart
 from fastapi import HTTPException, UploadFile
 
 logger = logging.getLogger(__name__)
@@ -45,15 +45,18 @@ def get_file_from_id(db: Session, id_part: int):
 
 
 def list_parts(db: Session, username: str) -> [Part]:
-    # TODO
     u = db.query(User).filter(User.username == username).first()
     if u is None:
         raise HTTPException(status_code=404, detail="User not found")
     grps = db.query(Group).join(UserGroup).filter(UserGroup.user_id == u.id).all()
     g_ids = [g.id for g in grps]
-    perm_read_user = db.query(Permission).filter(Permission.user_id == u.id).all()
-    perm_read_users_group = db.query(Permission).filter(Permission.group_id._in(g_ids)).all()
-    p = db.query(Part).filter(or_(Part.id.in_(part_id_perm_read), ))
+    perm_read_user = db.query(PermissionPart).filter(PermissionPart.user_id == u.id).all()
+    perm_read_users_group = db.query(PermissionPart).filter(PermissionPart.group_id.in_(g_ids)).all()
+    parts_id = [p.part_id for p in perm_read_user]
+    parts_id += [p.part_id for p in perm_read_users_group]
+    if not len(parts_id):
+        return None
+    p = db.query(Part).filter(Part.id.in_(parts_id)).all()
     # TODO lister que les part ou l'on a les droit read direct
     # et aussi les part ou le groupe auquel on appartient a les droit read
     # SELECT * FROM PART

@@ -26,8 +26,9 @@ async def list_parts(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> List[PartOut]:
     Authorize.jwt_required()
-    crud_permission_part.check_admin(db, Authorize.get_jwt_subject())
     all_p = crud_part.list_parts(db, Authorize.get_jwt_subject())
+    if all_p is None:
+        return []
     for i, p in enumerate(all_p):
         all_p[i] = all_p[i].ToPartOut()
     return all_p
