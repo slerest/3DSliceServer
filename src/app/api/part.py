@@ -15,6 +15,7 @@ from core.utils import get_queries
 import crud.part as crud_part
 import crud.permission_part as crud_permission_part
 import crud.permission as crud_permission
+import crud.permission as crud_permission
 from dependencies.database import get_db
 from fastapi.responses import FileResponse
 from fastapi_jwt_auth import AuthJWT
@@ -51,10 +52,10 @@ async def create_part(
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> PartOut:
     Authorize.jwt_required()
-    if not check_user_permission_create(db, Authorize.get_jwt_subject()):
+    if not crud_permission.check_user_permission_create(db, Authorize.get_jwt_subject()):
         raise HTTPException(status_code=401, detail="Unauthorized access")
     p = crud_part.create_part(db, part)
-    perm = crud_permission.create_permission_part_user(db, p.id, Authorize.get_jwt_subject())
+    perm = crud_permission_part.create_permission_part_user(db, p.id, Authorize.get_jwt_subject())
     return p.ToPartOut()
 
 @router.put("/{id_part}", response_model=PartOut, name="parts:modify-part")

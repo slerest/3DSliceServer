@@ -2,6 +2,7 @@ from model.user import User
 from model.group import Group
 from model.user_group import UserGroup
 from model.permission_part import PermissionPart
+from schema.permission_part import PermissionPartOut
 from schema.permission_part import RightsPart
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
@@ -15,6 +16,8 @@ def check_part_right(
     # Check is user exists in database
     if u is None:
         raise HTTPException(status_code=404, detail="User not found")
+    if u.superuser:
+        return RightsPart(read=True, write=True, delete=True)
     # Check is user is super user, in that case, he has all the rights
     # Get direct part's permission information
     p = db.query(PermissionPart).filter(
@@ -45,10 +48,12 @@ def create_permission_part_user(
         username: str,
         read=True,
         write=True,
-        delete=True):
+        delete=True) -> PermissionPartOut:
     u = db.query(User).filter(User.username == username).first()
     if u is None:
         raise HTTPException(status_code=404, detail="User not found")
+    if u.superuser:
+        return None
     perm = PermissionPart(
             user_id=u.id,
             group_id=None,
