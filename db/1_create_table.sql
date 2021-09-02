@@ -51,6 +51,7 @@ CREATE TABLE "3DSLICESERVER"."USER" (
 	"PASSWORD" text NOT NULL,
 	"DISABLE" boolean DEFAULT TRUE,
 	"CREATE" boolean DEFAULT TRUE,
+	"SUPERUSER" boolean DEFAULT FALSE,
 	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
 	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now()
 );

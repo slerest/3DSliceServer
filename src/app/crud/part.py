@@ -48,6 +48,8 @@ def list_parts(db: Session, username: str) -> [Part]:
     u = db.query(User).filter(User.username == username).first()
     if u is None:
         raise HTTPException(status_code=404, detail="User not found")
+    if u.superuser:
+        return db.query(Part).all()
     grps = db.query(Group).join(UserGroup).filter(UserGroup.user_id == u.id).all()
     g_ids = [g.id for g in grps]
     perm_read_user = db.query(PermissionPart).filter(PermissionPart.user_id == u.id).all()
@@ -57,11 +59,6 @@ def list_parts(db: Session, username: str) -> [Part]:
     if not len(parts_id):
         return None
     p = db.query(Part).filter(Part.id.in_(parts_id)).all()
-    # TODO lister que les part ou l'on a les droit read direct
-    # et aussi les part ou le groupe auquel on appartient a les droit read
-    # SELECT * FROM PART
-    # WHERE PART.ID IN (USER_DIRECT_PERM_READ)
-    # OR PART.ID (USER_GROUP_PERM_READ)
     return p 
 
 def get_part(id_part: int, db: Session) -> Part:

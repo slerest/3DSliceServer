@@ -37,7 +37,6 @@ class PartTest(unittest.TestCase):
         url = 'http://localhost/slice-server/api/0.0/parts'
         h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_regular}
         r = requests.get(url, headers=h)
-        print(r.json())
         assert r.status_code == 200
 
     def test_modify_part(self):
