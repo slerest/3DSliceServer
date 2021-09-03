@@ -31,8 +31,9 @@ async def list_users(
         ),
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> List[UserOut]:
-
     Authorize.jwt_required()
+    if not crud_user.check_superuser(db, Authorize.get_jwt_subject()):
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     if email is not None:
         return [crud_user.get_user_by_email(email, db).ToUserOut()]
     if username is not None:
@@ -48,8 +49,9 @@ async def get_user(
         id_user: int,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> UserOut:
-
     Authorize.jwt_required()
+    if not crud_user.check_read_user(db, Authorize.get_jwt_subject(), id_user):
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     u = crud_user.get_user(id_user, db)
     return u.ToUserOut()
 
@@ -58,8 +60,9 @@ async def list_user_permissions(
         id_user: int,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> UserOut:
-
     Authorize.jwt_required()
+    if not crud_user.check_read_user(db, Authorize.get_jwt_subject(), id_user):
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     parts = crud_user.list_user_permissions(id_user, db)
     for i, p in enumerate(parts):
         parts[i] = parts[i].ToPermissionOut(db)
@@ -72,16 +75,18 @@ async def list_groups_of_user(
         db: Session = Depends(get_db)) -> List[GroupOut]:
 
     Authorize.jwt_required()
+    if not crud_user.check_read_user(db, Authorize.get_jwt_subject(), id_user):
+        raise HTTPException(status_code=401, detail="Unauthorized access")
     groups = crud_user.list_groups_of_user(id_user, db)
     for i, g in enumerate(groups):
         groups[i] = groups[i].ToGroupOut()
     return groups
 
+# TODO create user with disable == True and send a email confirmation for validation account
 @router.post("", response_model=UserOut, name="users:create-user")
 async def create_user(
         user: UserIn,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> UserOut:
-
     u = crud_user.create_user(user, db)
     return u.ToUserOut()

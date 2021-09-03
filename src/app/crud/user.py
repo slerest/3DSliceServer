@@ -61,3 +61,19 @@ def list_groups_of_user(id_user: int, db: Session) -> [Group]:
 def list_user_permissions(id_user: int, db: Session) -> [Permission]:
     p = db.query(Permission).filter(Permission.user_id == id_user).all()
     return p
+
+def check_superuser(db: Session, username: str) -> bool:
+    u = db.query(User).filter(User.username == username).first()
+    if u is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    if u.superuser:
+        return True
+    return False
+
+def check_read_user(db: Session, username: str, id_user: int) -> bool:
+    u = db.query(User).filter(User.username == username).first()
+    if u is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    if u.superuser or u.id == id_user:
+        return True
+    return False
