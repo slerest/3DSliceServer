@@ -104,7 +104,7 @@ class PartTest(unittest.TestCase):
         url='http://localhost/slice-server/api/0.0/parts/file/' + id_part
         f = open('FredTheCowboy.stl','rb')
         files={'file_part': f}
-        r = requests.post(url, files=files)
+        r = requests.post(url, files=files, headers=h)
         assert r.status_code == 200
         f.close()
 
@@ -130,12 +130,6 @@ class PartTest(unittest.TestCase):
 
         # DELETE LOCAL FILE
         os.remove('./foo.stl')
-
-    def test_get_part_no_permission(self):
-        url = 'http://localhost/slice-server/api/0.0/parts'
-        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_regular}
-        r = requests.get(url, headers=h)
-        assert r.status_code == 403
 
 if __name__ == '__main__':
     unittest.main()
