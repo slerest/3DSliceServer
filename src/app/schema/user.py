@@ -18,3 +18,8 @@ class UserIn(BaseModel):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+class UserPatch(BaseModel):
+    username: str
+    email: EmailStr
+    password: str

@@ -6,7 +6,6 @@ from schema.permission_part import PermissionPartOut
 from schema.permission_part import RightsPart
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from typing import Tuple
 
 def check_part_right(
         db: Session,

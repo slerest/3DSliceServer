@@ -1,10 +1,11 @@
-from schema.user import UserLogin, UserIn
+from schema.user import UserLogin, UserIn, UserPatch
 from model.user import User
 from model.permission import Permission
 from model.group import Group
 from model.user_group import UserGroup
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from typing import Tuple
 import hashlib
 
 def login(user: UserLogin, db: Session) -> bool:
@@ -28,13 +29,6 @@ def create_user(u_in: UserIn, db: Session) -> User:
     db.commit()
     db.refresh(u)
     return u
-
-def delete_user(id_user, db: Session) -> User:
-    u = db.query(User).filter(User.id == id_user).first()
-    if u is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    db.delete(u)
-    db.commit()
 
 def get_user(id_user: int, db: Session) -> User:
     u = db.query(User).filter(User.id == id_user).first()
@@ -77,3 +71,32 @@ def check_read_user(db: Session, username: str, id_user: int) -> bool:
     if u.superuser or u.id == id_user:
         return True
     return False
+
+def check_modify_user(db: Session, username: str, id_user: int) -> Tuple[bool, bool]:
+    superuser, check_user = False, False
+    u = db.query(User).filter(User.username == username).first()
+    if u is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    if u.superuser:
+        superuser = True
+    if u.id == id_user:
+        check_user = True
+    return superuser, check_user
+
+def patch_user(db: Session, user: UserPatch, id_user: int) -> User:
+    u = db.query(User).filter(User.id == id_user).first()
+    if u is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    for var, value in vars(user).items():
+        setattr(u, var, value) if value else None
+    db.add(u)
+    db.commit()
+    db.refresh(u)
+    return u
+
+def delete_user(db: Session, id_user: int):
+    u = db.query(User).filter(User.id == id_user).first()
+    if u is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(u)
+    db.commit()

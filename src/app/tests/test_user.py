@@ -16,6 +16,13 @@ class UserTest(unittest.TestCase):
         r = requests.post(url, headers=h, data=json.dumps(body))
         assert r.status_code == 200
         self.token = r.json()['token']
+        body = {
+            'username':'regular_1',
+            'password': 'secret'
+        }
+        r = requests.post(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 200
+        self.token_regular = r.json()['token']
 
     def test_create_user(self):
         url = 'http://localhost/slice-server/api/0.0/users'
@@ -26,7 +33,37 @@ class UserTest(unittest.TestCase):
             'password':'ohohoho'
         }
         r = requests.post(url, headers=h, data=json.dumps(body))
+        id_user = r.json()['id']
         assert r.status_code == 200
+        url = 'http://localhost/slice-server/api/0.0/users/' + str(id_user)
+        r = requests.delete(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 204
+
+    def test_create_patch_user(self):
+        # CREATE
+        url = 'http://localhost/slice-server/api/0.0/users'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        body = {
+            'username':'user22',
+            'email':'user22@gmail.com',
+            'password':'ohohoho'
+        }
+        r = requests.post(url, headers=h, data=json.dumps(body))
+        id_user = r.json()['id']
+        assert r.status_code == 200
+        # PATCH
+        url = 'http://localhost/slice-server/api/0.0/users/' + str(id_user)
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token}
+        body = {
+            'username':'user33',
+            'email':'user33@gmail.com',
+            'password':'alalalala'
+        }
+        r = requests.patch(url, headers=h, data=json.dumps(body))
+        # DELETE
+        url = 'http://localhost/slice-server/api/0.0/users/' + str(id_user)
+        r = requests.delete(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 204
 
     def test_list_users(self):
         url = 'http://localhost/slice-server/api/0.0/users'
