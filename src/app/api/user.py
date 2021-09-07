@@ -3,7 +3,6 @@ from fastapi import (
     Depends,
     Query
 )
-
 from fastapi_jwt_auth import AuthJWT
 from typing import List
 from sqlalchemy.orm import Session
@@ -14,9 +13,9 @@ from dependencies.database import get_db
 import crud.user as crud_user
 from typing import Optional
 from pydantic import EmailStr
+from fastapi import HTTPException
 
 router = APIRouter()
-
 
 @router.get("", response_model=List[UserOut], name="users:list-users")
 async def list_users(
