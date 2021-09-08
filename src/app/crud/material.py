@@ -14,3 +14,9 @@ def list_materials(
     m = m.filter(Material.general_type == general_type) if general_type is not None else m
     m = m.filter(Material.specific_type == specific_type) if specific_type is not None else m
     return m.all()
+
+def get_material(id_material: int, db: Session) -> Material:
+    m = db.query(Material).filter(Material.id == id_material).first()
+    if m is None:
+        raise HTTPException(status_code=404, detail="Material not found")
+    return m

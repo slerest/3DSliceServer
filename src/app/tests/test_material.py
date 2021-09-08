@@ -33,5 +33,11 @@ class MaterialTest(unittest.TestCase):
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
+    def test_get_material_by_id(self):
+        url = 'http://localhost/slice-server/api/0.0/materials/1453'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_admin}
+        r = requests.get(url, headers=h)
+        assert r.status_code == 200
+
 if __name__ == '__main__':
     unittest.main()

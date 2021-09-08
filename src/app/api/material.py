@@ -45,3 +45,12 @@ async def list_materials(
     for i, u in enumerate(materials):
         materials[i] = materials[i].ToMaterialOut()
     return materials
+
+@router.get("/{id_material}", response_model=MaterialOut, name="materials:get-material")
+async def get_material(
+        id_material: int,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> MaterialOut:
+    Authorize.jwt_required()
+    m = crud_material.get_material(id_material, db)
+    return m.ToMaterialOut()
