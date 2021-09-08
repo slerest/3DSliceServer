@@ -225,7 +225,9 @@ CREATE TABLE "3DSLICESERVER"."MATERIAL" (
 	"PART_DENSITY" float DEFAULT NULL, -- (g/cm3)
 	"FLAMMABILITY" varchar(255) DEFAULT NULL, -- TODO se renseigner sur les categories
 	"USP_CLASS_VI_CERTIFIED" boolean DEFAULT NULL, -- TODO certification qui correspond a quoi ?
-	"AVAILABILITY" boolean DEFAULT NULL -- TODO surement un bool, a check, on met string pour l'instant
+	"AVAILABILITY" boolean DEFAULT NULL, -- TODO surement un bool, a check, on met string pour l'instant
+	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
+	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now()
 );
 ALTER SEQUENCE "3DSLICESERVER"."MATERIAL_ID_seq" RESTART WITH 1453;
 

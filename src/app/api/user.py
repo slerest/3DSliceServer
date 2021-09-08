@@ -4,14 +4,13 @@ from fastapi import (
     Query
 )
 from fastapi_jwt_auth import AuthJWT
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from schema.user import UserOut, UserIn, UserPatch
 from schema.permission import PermissionOut
 from schema.group import GroupOut
 from dependencies.database import get_db
 import crud.user as crud_user
-from typing import Optional
 from pydantic import EmailStr
 from fastapi import HTTPException
 

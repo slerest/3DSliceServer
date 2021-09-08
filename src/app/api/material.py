@@ -1,9 +1,10 @@
 from fastapi import (
     APIRouter,
-    Depends
+    Depends,
+    Query
 )
 from fastapi_jwt_auth import AuthJWT
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from schema.material import MaterialOut
 from dependencies.database import get_db
@@ -12,7 +13,7 @@ from fastapi import HTTPException
 
 router = APIRouter()
 
-@router.get("", response_model=List[UserOut], name="users:list-users")
+@router.get("", response_model=List[MaterialOut], name="users:list-users")
 async def list_materials(
         supplier: Optional[str] = Query(
             None,
@@ -35,7 +36,7 @@ async def list_materials(
             description="Query string for filter material by specific type",
         ),
         Authorize: AuthJWT = Depends(),
-        db: Session = Depends(get_db)) -> List[UserOut]:
+        db: Session = Depends(get_db)) -> List[MaterialOut]:
     Authorize.jwt_required()
     materials = crud_material.list_materials(
         db, supplier, name, general_type, specific_type)

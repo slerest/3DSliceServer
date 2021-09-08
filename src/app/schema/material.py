@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from schema.generics import DateTimeModelMixin, IDModelMixin
+from typing import Optional
 
 # data from senvol.com
 

@@ -17,7 +17,7 @@ class Material(BaseModel):
     general_type = Column('GENERAL_TYPE', String, nullable=False)
     specific_type = Column('SPECIFIC_TYPE', String, nullable=False)
     am_process = Column('AM_PROCESS', String, nullable=False)
-    post_process = Column('AM_PROCESS', Boolean, default=None, nullable=True)
+    post_process = Column('POST_PROCESS', Boolean, default=None, nullable=True)
     ultimate_temsile_strength_min = Column('ULTIMATE_TENSILE_STRENGTH_MIN', Float, default=None, nullable=True)
     ultimate_temsile_strength_max = Column('ULTIMATE_TENSILE_STRENGTH_MAX', Float, default=None, nullable=True)
     tensible_modulus_min = Column('TENSILE_MODULUS_MIN', Float, default=None, nullable=True)
