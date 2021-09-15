@@ -18,10 +18,10 @@ class Material(BaseModel):
     specific_type = Column('SPECIFIC_TYPE', String, nullable=False)
     am_process = Column('AM_PROCESS', String, nullable=False)
     post_process = Column('POST_PROCESS', Boolean, default=None, nullable=True)
-    ultimate_temsile_strength_min = Column('ULTIMATE_TENSILE_STRENGTH_MIN', Float, default=None, nullable=True)
-    ultimate_temsile_strength_max = Column('ULTIMATE_TENSILE_STRENGTH_MAX', Float, default=None, nullable=True)
-    tensible_modulus_min = Column('TENSILE_MODULUS_MIN', Float, default=None, nullable=True)
-    tensible_modulus_max = Column('TENSILE_MODULUS_MAX', Float, default=None, nullable=True)
+    ultimate_tensible_strength_min = Column('ULTIMATE_TENSILE_STRENGTH_MIN', Float, default=None, nullable=True)
+    ultimate_tensible_strength_max = Column('ULTIMATE_TENSILE_STRENGTH_MAX', Float, default=None, nullable=True)
+    tensile_modulus_min = Column('TENSILE_MODULUS_MIN', Float, default=None, nullable=True)
+    tensile_modulus_max = Column('TENSILE_MODULUS_MAX', Float, default=None, nullable=True)
     elongation_at_break_min = Column('ELONGATION_AT_BREAK_MIN', Float, default=None, nullable=True)
     elongation_at_break_max = Column('ELONGATION_AT_BREAK_MAX', Float, default=None, nullable=True)
     flexural_strength_min = Column('FLEXURAL_STRENGTH_MIN', Float, default=None, nullable=True)
@@ -42,16 +42,17 @@ class Material(BaseModel):
 
     def ToMaterialOut(self) -> MaterialOut:
         return MaterialOut(
+            id = self.id,
             supplier = self.supplier,
             name = self.name,
             general_type = self.general_type,
             specific_type = self.specific_type,
             am_process = self.am_process,
             post_process = self.post_process,
-            ultimate_temsile_strength_min = self.ultimate_temsile_strength_min,
-            ultimate_temsile_strength_max = self.ultimate_temsile_strength_max,
-            tensible_modulus_min = self.tensible_modulus_min,
-            tensible_modulus_max = self.tensible_modulus_max,
+            ultimate_tensible_strength_min = self.ultimate_tensible_strength_min,
+            ultimate_tensible_strength_max = self.ultimate_tensible_strength_max,
+            tensile_modulus_min = self.tensile_modulus_min,
+            tensile_modulus_max = self.tensile_modulus_max,
             elongation_at_break_min = self.elongation_at_break_min,
             elongation_at_break_max = self.elongation_at_break_max,
             flexural_strength_min = self.flexural_strength_min,

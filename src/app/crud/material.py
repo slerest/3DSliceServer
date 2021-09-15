@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from model.material import Material, MaterialIn
+from model.material import Material
+from schema.material import MaterialIn
 from fastapi import HTTPException
 
 def list_materials(
@@ -30,7 +31,7 @@ def create_material(m_in: MaterialIn, db: Session) -> Material:
 
 def delete_material(db: Session, id_material: int):
     m = db.query(Material).filter(Material.id == id_material).first()
-    if u is None:
+    if m is None:
         raise HTTPException(status_code=404, detail="Material not found")
     db.delete(m)
     db.commit()

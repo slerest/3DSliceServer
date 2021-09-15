@@ -39,5 +39,22 @@ class MaterialTest(unittest.TestCase):
         r = requests.get(url, headers=h)
         assert r.status_code == 200
 
+    def test_create_delete(self):
+        url = 'http://localhost/slice-server/api/0.0/materials'
+        h = {"Accept": "application/json", 'Authorization': 'Bearer ' + self.token_admin}
+        body = {
+            'supplier': 'str',
+            'name': 'str',
+            'general_type': 'str',
+            'specific_type': 'str',
+            'am_process': 'str'
+        }
+        r = requests.post(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 200
+        id_material = str(r.json()['id'])
+        url = 'http://localhost/slice-server/api/0.0/materials/' + id_material
+        r = requests.delete(url, headers=h)
+        assert r.status_code == 204
+
 if __name__ == '__main__':
     unittest.main()

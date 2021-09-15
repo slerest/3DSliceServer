@@ -59,7 +59,7 @@ async def get_material(
 async def create_material(
         material: MaterialIn,
         Authorize: AuthJWT = Depends(),
-        db: Session = Depends(get_db)) -> UserOut:
+        db: Session = Depends(get_db)) -> MaterialOut:
     m = crud_material.create_material(material, db)
     return m.ToMaterialOut()
 
