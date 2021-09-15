@@ -88,7 +88,10 @@ def patch_user(db: Session, user: UserPatch, id_user: int) -> User:
     if u is None:
         raise HTTPException(status_code=404, detail="User not found")
     for var, value in vars(user).items():
-        setattr(u, var, value) if value else None
+        if var == 'password':
+            u.password = hashlib.sha256(u.password.encode()).hexdigest()
+        else:
+            setattr(u, var, value) if value else None
     db.add(u)
     db.commit()
     db.refresh(u)

@@ -6,7 +6,7 @@ from fastapi import (
 from fastapi_jwt_auth import AuthJWT
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from schema.material import MaterialOut, MaterialIn
+from schema.material import MaterialOut, MaterialIn, MaterialPatch
 from dependencies.database import get_db
 import crud.material as crud_material
 from fastapi import HTTPException
@@ -60,7 +60,18 @@ async def create_material(
         material: MaterialIn,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> MaterialOut:
+    Authorize.jwt_required()
     m = crud_material.create_material(material, db)
+    return m.ToMaterialOut()
+
+@router.patch("/{id_material}", response_model=MaterialOut, name="materials:modify-material")
+async def patch_material(
+        id_material: int,
+        material: MaterialPatch,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> MaterialOut:
+    Authorize.jwt_required()
+    m = crud_material.patch_material(db, material, id_material)
     return m.ToMaterialOut()
 
 @router.delete("/{id_material}", status_code=204, name="materials:delete-material")

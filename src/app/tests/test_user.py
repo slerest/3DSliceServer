@@ -60,6 +60,7 @@ class UserTest(unittest.TestCase):
             'password':'alalalala'
         }
         r = requests.patch(url, headers=h, data=json.dumps(body))
+        assert r.status_code == 200
         # DELETE
         url = 'http://localhost/slice-server/api/0.0/users/' + str(id_user)
         r = requests.delete(url, headers=h, data=json.dumps(body))

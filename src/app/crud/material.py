@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from model.material import Material
-from schema.material import MaterialIn
+from schema.material import MaterialIn, MaterialPatch
 from fastapi import HTTPException
 
 def list_materials(
@@ -24,6 +24,17 @@ def get_material(id_material: int, db: Session) -> Material:
 
 def create_material(m_in: MaterialIn, db: Session) -> Material:
     m = Material(**m_in.dict())
+    db.add(m)
+    db.commit()
+    db.refresh(m)
+    return m
+
+def patch_material(db: Session, material: MaterialPatch, id_material: int) -> Material:
+    m = db.query(Material).filter(Material.id == id_material).first()
+    if m is None:
+        raise HTTPException(status_code=404, detail="Material not found")
+    for var, value in vars(material).items():
+        setattr(m, var, value) if value else None
     db.add(m)
     db.commit()
     db.refresh(m)
