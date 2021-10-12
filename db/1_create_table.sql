@@ -188,7 +188,9 @@ CREATE TABLE "3DSLICESERVER"."MACHINE" (
     "SPECIFIC_MATERIAL_TYPE" varchar(255) DEFAULT NULL,
     "X" float DEFAULT NULL,
     "Y" float DEFAULT NULL,
-    "Z" float DEFAULT NULL
+    "Z" float DEFAULT NULL,
+	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
+	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now()
 );
 ALTER SEQUENCE "3DSLICESERVER"."MACHINE_ID_seq" RESTART WITH 1453;
 

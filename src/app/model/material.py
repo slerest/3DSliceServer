@@ -2,11 +2,9 @@ from model.base import BaseModel
 from schema.material import MaterialOut
 from sqlalchemy import (
     Column,
-    Integer,
     Float,
     String,
     Boolean,
-    ForeignKey
 )
 
 class Material(BaseModel):

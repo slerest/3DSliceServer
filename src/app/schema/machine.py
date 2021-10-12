@@ -1,18 +1,17 @@
 from pydantic import BaseModel
+from schema.generics import DateTimeModelMixin, IDModelMixin
+from typing import Optional
 
 # data from senvol.com
 
-class MachineOut(BaseModel):
-    id: int
+class MachineOut(DateTimeModelMixin, IDModelMixin):
     manufacturer: str
     model: str
-    mode: str
-    power: int
-    am_process: str
-    general_material_type: str
-    specific_material_type: str
-    x: float
-    y: float
-    z: float
-    price: str
-    availability: bool
+    mode: Optional[str]
+    power: Optional[str]
+    am_process: Optional[str]
+    general_material_type: Optional[str]
+    specific_material_type: Optional[str]
+    x: Optional[float]
+    y: Optional[float]
+    z: Optional[float]

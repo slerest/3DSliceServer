@@ -42,7 +42,7 @@ async def list_materials(
         db, supplier, name, general_type, specific_type)
     if materials is None:
         return []
-    for i, u in enumerate(materials):
+    for i, m in enumerate(materials):
         materials[i] = materials[i].ToMaterialOut()
     return materials
 
