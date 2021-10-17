@@ -1,5 +1,3 @@
-#from core.database import Base
-from core.settings import settings
 from model.base import BaseModel
 from schema.part import PartOut
 from sqlalchemy import (

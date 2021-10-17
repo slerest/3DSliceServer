@@ -11,14 +11,11 @@ from sqlalchemy.orm import Session
 from schema.part import PartOut, PartIn, PartModify
 from model.part import Part
 from core.settings import settings
-from core.utils import get_queries
 import crud.part as crud_part
 import crud.permission_part as crud_permission_part
 import crud.permission as crud_permission
-import crud.permission as crud_permission
 from dependencies.database import get_db
 from fastapi.responses import FileResponse
-from fastapi_jwt_auth import AuthJWT
 
 router = APIRouter()
 
