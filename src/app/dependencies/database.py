@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 def get_db():
     db = SessionLocal()
     conn = db.connection()
-    conn.execute('set search_path="{}", public'.format("3DSLICESERVER"))
+    conn.execute('set search_path="{}", public'.format(settings.db_schema))
     try:
         yield db
     finally:

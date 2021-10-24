@@ -1,6 +1,4 @@
-import logging
 import os
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from schema.part import PartIn, PartModify
 from model.part import Part
@@ -9,8 +7,6 @@ from model.group import Group
 from model.user_group import UserGroup
 from model.permission_part import PermissionPart
 from fastapi import HTTPException, UploadFile
-
-logger = logging.getLogger(__name__)
 
 def create_part(db: Session, p_in: PartIn) -> Part:
     p = Part(**p_in.dict())
@@ -59,7 +55,7 @@ def list_parts(db: Session, username: str) -> [Part]:
     if not len(parts_id):
         return None
     p = db.query(Part).filter(Part.id.in_(parts_id)).all()
-    return p 
+    return p
 
 def get_part(id_part: int, db: Session) -> Part:
     p = db.query(Part).filter(Part.id == id_part).first()

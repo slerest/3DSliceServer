@@ -6,10 +6,14 @@ from schema.part import PartOut
 from schema.slicer import SlicerOut
 from schema.generics import DateTimeModelMixin, IDModelMixin
 
+# slerest 18/10/2021
+# TODO
+# do a queue with position when slicer server is busy
+
 class SliceStatus(str, Enum):
     sliced = "sliced"
     slicing = "slicing"
-    in_queue = "in_queue"
+#    in_queue = "in_queue"
     error = "error"
     no_slice = "no_slice"
 
