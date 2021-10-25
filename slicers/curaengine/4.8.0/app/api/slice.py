@@ -1,30 +1,30 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
-from subprocess import Popen, PIPE
-from asyncio import create_subprocess_shell, subprocess
-from model.slice import SliceOut, SliceIn
-from pathlib import Path
-from typing import List, Dict, Any
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    File,
+    UploadFile
+)
+from fastapi_jwt_auth import AuthJWT
+from typing import List
+from sqlalchemy.orm import Session
+from core.settings import settings
+from dependencies.database import get_db
+from fastapi.responses import FileResponse
+from schema.slice import SliceOut, SliceIn
 
 router = APIRouter()
 
-# TODO dict of additional parameters
-@router.post("/", response_model=SliceOut, name="slices:createslices")
-async def create_slice(slice_in: SliceIn) -> SliceOut:
-    print("OK")
-    # check if definition file is present
-    if Path(settings.path_definition_files, + slice_in.definition_file):
-        raise HTTPException(status_code=400, detail="Definition file not found")
-
-    # TODO Create stl file from Bytes posted
-    print(dir(stl_file))
-
-    # TODO on va changer le output.gcode pour avoir un nom unique
-    path_stl_file = '/stl_file.stl'
-    path_output_gcode = '/output.gcode'
-    cmd = [settings.path_curaengine, 'slice', '-v', '-j',
-            settings.path_definition_files + definition_file,
-            '-o', path_output_gcode, '-l', path_stl_file]
-    process = await create_subprocess_shell(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
-    print("Started: %s, pid=%s" % (args, process.pid), flush=True)
+@router.post("", response_model=SliceOut, name="slice:create-slice")
+async def create_slice(
+        part: SliceIn,
+        Authorize: AuthJWT = Depends(),
+        db: Session = Depends(get_db)) -> SliceOut:
+    Authorize.jwt_required()
+    '''
+    if not crud_permission.check_user_permission_create(db, Authorize.get_jwt_subject()):
+        raise HTTPException(status_code=401, detail="Unauthorized access")
+    p = crud_slice.create_slice(db, slice_in)
+    perm = crud_permission_part.create_permission_part_user(db, p.id, Authorize.get_jwt_subject())
+    '''
+    return True

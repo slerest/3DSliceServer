@@ -16,10 +16,15 @@ class Settings(BaseSettings):
     db_schema: str = Field(..., env='DB_SCHEMA')
     db_user: str = Field(..., env='DB_USER')
     db_password: str = Field(..., env='DB_PASSWORD')
+    db_conn: str = Field(..., env='DB_CONN')
     # Auth
     basic: bool = Field(..., env='AUTH_BASIC')
     bearer: bool = Field(..., env='AUTH_BEARER')
     api_key: bool = Field(..., env='AUTH_API_KEY')
+    authjwt_secret_key: str = Field(..., env='AUTHJWT_SECRET_KEY')
     # Path
     path_definition_files: str = Field(..., env='PATH_DEFINITION_FILES')
     path_curaengine: str = Field(..., env='PATH_CURAENGINE')
+
+
+settings = Settings()
