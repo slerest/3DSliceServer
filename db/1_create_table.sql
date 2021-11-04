@@ -244,18 +244,36 @@ BEFORE UPDATE ON "3DSLICESERVER"."MATERIAL"
 FOR EACH ROW
 	EXECUTE PROCEDURE trigger_set_timestamp();
 
+CREATE TABLE "3DSLICESERVER"."SLICER_SPEC" (
+	"ID" SERIAL PRIMARY KEY NOT NULL,
+	"CURA_DEFINITION_FILE_E1" varchar(255) DEFAULT NULL,
+	"CURA_DEFINITION_FILE_E2" varchar(255) DEFAULT NULL,
+	"CURA_PARAMETER" JSON DEFAULT NULL, 
+	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
+	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now()
+);
+
+ALTER SEQUENCE "3DSLICESERVER"."SLICER_SPEC_ID_seq" RESTART WITH 1453;
+
+CREATE TRIGGER set_timestamp_slice
+BEFORE UPDATE ON "3DSLICESERVER"."SLICER_SPEC"
+FOR EACH ROW
+	EXECUTE PROCEDURE trigger_set_timestamp();
 
 CREATE TABLE "3DSLICESERVER"."SLICE" ( -- TODO check si on peut creer des nom de schema qui commence avec un number
 	"ID" SERIAL PRIMARY KEY NOT NULL,
 	"GCODE" text DEFAULT NULL,
 	"PRINT_TIME" interval DEFAULT NULL,
 	"SLICE_TIME" interval DEFAULT NULL,
-	"PART_ID" integer DEFAULT NULL, -- foreign key
-	"STATUS" varchar(50) DEFAULT NULL,
-	"COLOR" varchar(10)[] DEFAULT NULL, -- peut avoir plusieurs couleurs, format RGB
-	"SLICER_ID" integer DEFAULT NULL, -- foreign key
+	"PART_ID" integer NOT NULL, -- foreign key
+	"STATUS" varchar(50) NOT NULL,
+	"SLICER_ID" integer NOT NULL, -- foreign key
 	"MATERIAL_ID" integer DEFAULT NULL, -- foreign key
 	"MACHINE_ID" integer DEFAULT NULL, -- foreign key
+	"SLICER_SPEC" integer NOT NULL,
+	"ERROR_CODE" integer DEFAULT NULL,
+	"ERROR_MESSAGE" text DEFAULT NULL,
+	"COMMENT" text DEFAULT NULL,
 	"CREATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
 	"UPDATED_AT" timestamp without time zone NOT NULL DEFAULT now(),
 
@@ -263,7 +281,6 @@ CREATE TABLE "3DSLICESERVER"."SLICE" ( -- TODO check si on peut creer des nom de
 	REFERENCES "3DSLICESERVER"."PART" ("ID") MATCH SIMPLE
 	ON UPDATE CASCADE
 	ON DELETE SET NULL,
-
 
 	CONSTRAINT "SLICER" FOREIGN KEY ("SLICER_ID")
 	REFERENCES "3DSLICESERVER"."SLICER" ("ID") MATCH SIMPLE

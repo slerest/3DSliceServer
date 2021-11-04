@@ -22,7 +22,5 @@ class Settings(BaseSettings):
     bearer: bool = Field(..., env='AUTH_BEARER')
     api_key: bool = Field(..., env='AUTH_API_KEY')
     authjwt_secret_key: str = Field(..., env='AUTHJWT_SECRET_KEY')
-    # Path
-    path_queries: str = Field(..., env='PATH_QUERIES')
 
 settings = Settings()
