@@ -6,6 +6,7 @@ from sqlalchemy import (
     Integer,
     String,
 )
+from sqlalchemy.orm import relationship
 
 class Machine(BaseModel):
     __tablename__ = 'MACHINE'
@@ -20,6 +21,7 @@ class Machine(BaseModel):
     x = Column('X', Float, default=None, nullable=True)
     y = Column('Y', Float, default=None, nullable=True)
     z = Column('Z', Float, default=None, nullable=True)
+    machine_slice = relationship("Slice", back_populates='machine')
 
     def ToMachineOut(self) -> MachineOut:
         return MachineOut(

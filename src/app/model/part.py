@@ -23,6 +23,7 @@ class Part(BaseModel):
     y = Column('Y', Float, default=None)
     z = Column('Z', Float, default=None)
     part_permission_part = relationship("PermissionPart", back_populates="part")
+    part_slice = relationship("Slice", back_populates="part")
 
     def __init__(self, name, unit, format):
         self.name = name

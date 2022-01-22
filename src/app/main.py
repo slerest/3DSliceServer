@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import FastAPI, APIRouter, Request
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -19,7 +19,7 @@ app = FastAPI(
     version=settings.version,
     openapi_url=settings.api_prefix + '/openapi.json',
     docs_url=settings.api_prefix + '/docs')
-    
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,8 +34,10 @@ app.add_middleware(
 def get_config():
     return settings
 
+#def authjwt_exception_handler(request: Request, exc: AuthJWTException):
+
 @app.exception_handler(AuthJWTException)
-def authjwt_exception_handler(request: Request, exc: AuthJWTException):
+def authjwt_exception_handler(exc: AuthJWTException):
     return JSONResponse(
         status_code=exc.status_code,
         content={"detail": exc.message}

@@ -6,6 +6,7 @@ from sqlalchemy import (
     String,
     Boolean,
 )
+from sqlalchemy.orm import relationship
 
 class Material(BaseModel):
     __tablename__ = 'MATERIAL'
@@ -37,6 +38,7 @@ class Material(BaseModel):
     flammability = Column('FLAMMABILITY', String, default=None, nullable=True)
     usp_class_vi_certified = Column('USP_CLASS_VI_CERTIFIED', Boolean, default=None, nullable=True)
     availability = Column('AVAILABILITY', Boolean, default=None, nullable=True)
+    material_slice = relationship("Slice", back_populates="material")
 
     def ToMaterialOut(self) -> MaterialOut:
         return MaterialOut(

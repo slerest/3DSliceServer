@@ -13,6 +13,7 @@ class Slicer(BaseModel):
     version = Column('VERSION', String, nullable=False)
     host = Column('HOST', String, default=None, nullable=True)
     port = Column('PORT', String, default=None, nullable=True)
+    slicer_slice = relationship("Slice", back_populates="slicer")
 
     def ToSlicerOut(self) -> SlicerOut:
         return SlicerOut(

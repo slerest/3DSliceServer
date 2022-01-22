@@ -15,16 +15,19 @@ from schema.slice import SliceOut, SliceIn
 
 router = APIRouter()
 
-@router.post("", response_model=SliceOut, name="slice:create-slice")
+@router.post("/{id_part}", response_model=SliceOut, name="slice:create-slice")
 async def create_slice(
+        id_part: int,
         part: SliceIn,
         Authorize: AuthJWT = Depends(),
         db: Session = Depends(get_db)) -> SliceOut:
     Authorize.jwt_required()
-    '''
-    if not crud_permission.check_user_permission_create(db, Authorize.get_jwt_subject()):
+    # TODO
+    cmd = "CuraEngine slice -v -e1 -j {definition_file_e1}"
+    perm = crud_permission.check_user_permission_part(db, id_part, Authorize.get_jwt_subject())
+    if not perm.read:
         raise HTTPException(status_code=401, detail="Unauthorized access")
-    p = crud_slice.create_slice(db, slice_in)
-    perm = crud_permission_part.create_permission_part_user(db, p.id, Authorize.get_jwt_subject())
+    s = crud_slice.create_slice(db, id_part, slice_in)
+    return s.ToSliceOut()
     '''
     return True
