@@ -15,12 +15,12 @@ class CuraParameterOut(IDModelMixin):
     value: str
 
 class SliceSpecificationOut(DateTimeModelMixin, IDModelMixin):
+    cura_definition_file_e0: Optional[str]
     cura_definition_file_e1: Optional[str]
-    cura_definition_file_e2: Optional[str]
     cura_prarameters: Optional[List[CuraParameterOut]]
 
 class SliceSpecificationIn(BaseModel):
+    cura_definition_file_e0: Optional[str]
     cura_definition_file_e1: Optional[str]
-    cura_definition_file_e2: Optional[str]
+    cura_parameter_e0: Optional[CuraParameterIn]
     cura_parameter_e1: Optional[CuraParameterIn]
-    cura_parameter_e2: Optional[CuraParameterIn]
