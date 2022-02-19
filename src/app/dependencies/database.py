@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 def get_db():
     db = SessionLocal()
     conn = db.connection()
-    conn.execute('set search_path="{}", public'.format(settings.db_schema))
+    conn.execute(f"set search_path=\"{settings.db_schema}\", public")
     try:
         yield db
     finally:

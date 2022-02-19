@@ -56,7 +56,7 @@ async def create_slice(
     s = crud_slice.create_slice(db, slice)
     s_out = s.ToSliceOut(db)
     # lancer request au conteneur de slice correspondant
-    url = "{}/api/{}/slice".format(s_out.slicer.name, s_out.slicer.version)
+    url = f"{s_out.slicer.name}/api/{s_out.slicer.version}/slice"
     # pas sur que ca marche aussi facilement
     # TODO recuperer le header en entier pour le retransferer
     #r = requests.post(url, body=json.dumps(slice.__dict__), header=h)
