@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from typing import List
 from model.slice import Slice
 from model.slice_specification import SliceSpecification
 from model.cura_parameter import CuraParameter
@@ -32,19 +33,19 @@ def get_slice(db: Session, id_slice: int) -> Slice:
 
 def create_cura_parameter(
         db: Session,
-        cura_param: CuraParameterIn,
-        n_extruder: int,
-        id_slice_spec: int):
+        cura_params: List[CuraParameterIn],
+        slicer_spec_id: int):
 
-    if cura_param is None:
+    if cura_params is None:
         return None
-    cp = CuraParameter({
-        'slice_specification_id': id_slice_spec,
-        'no_extruder': n_extruder,
-        'key': cura_param.key,
-        'value': cura_param.value
-    })
-    db.add(cp)
+    for cp in cura_params:
+        cp = CuraParameter(**{
+            'slicer_spec_id': slicer_spec_id,
+            'no_extruder': cp.no_extruder,
+            'key': cp.key,
+            'value': cp.value
+        })
+        db.add(cp)
     db.commit()
     db.refresh(cp)
 
@@ -53,16 +54,16 @@ def create_slice(db: Session, s_in: SliceIn) -> Slice:
     # Insert slice specification
     sp = s_in.dict()['slice_spec']
     sp = {
-        'cura_definition_file_e1': sp['cura_definition_file_e1'],
-        'cura_definition_file_e2': sp['cura_definition_file_e2']
+        'cura_definition_file_e0': sp['cura_definition_file_e0'],
+        'cura_definition_file_e1': sp['cura_definition_file_e1']
     }
     sp = SliceSpecification(**sp)
     db.add(sp)
     db.commit()
     db.refresh(sp)
     # Insert cura parameter
-    create_cura_parameter(db, s_in.slice_spec.cura_parameter_e1, 1,sp.id)
-    create_cura_parameter(db, s_in.slice_spec.cura_parameter_e2, 2, sp.id)
+    print(s_in)
+    create_cura_parameter(db, s_in.slice_spec.cura_parameters, sp.id)
     # Insert slice
     slice = s_in.dict().copy()
     u = {'slice_spec_id': sp.id}

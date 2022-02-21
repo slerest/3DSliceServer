@@ -32,14 +32,24 @@ class SliceTest(unittest.TestCase):
             'material_id': 1453,
             'slicer_id': 1453,
             'slice_spec': {
+                'cura_definition_file_e0': 'test_f0',
                 'cura_definition_file_e1': 'test_f1',
-                'cura_definition_file_e2': 'test_f2'
+                'cura_parameters': [
+                    {
+                        'no_extruder': 0,
+                        'key': 'test_key_0',
+                        'value': 'test_value_0'
+                    },
+                    {
+                        'no_extruder': 1,
+                        'key': 'test_key_1',
+                        'value': 'test_value_1'
+                    }
+                    ]
             },
             'comment': 'un commentaire'
         }
         r = requests.post(url, headers=h, data=json.dumps(body))
-        print(r.text)
-        print(r.status_code)
         assert r.status_code == 200
 
 if __name__ == '__main__':
